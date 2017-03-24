@@ -1,0 +1,43 @@
+[{
+	"src": "media/audio/Vocals30.mp3",
+	"start": 19.999999999999993,
+	"end": 28.581999999999994,
+	"name": "Vocals",
+	"customClass": "vocals",
+	"cuein": 5.918,
+	"cueout": 14.5,
+	"fadeIn": {
+		"shape": "logarithmic",
+		"duration": 0.5
+	},
+	"fadeOut": {
+		"shape": "logarithmic",
+		"duration": 0.5
+	}
+}, {
+	"src": "media/audio/BassDrums30.mp3",
+	"start": 7.619047619047622,
+	"end": 15.235668934240364,
+	"name": "Drums",
+	"cuein": 22.3843537414966,
+	"cueout": 30.00097505668934,
+	"fadeIn": {
+		"shape": "logarithmic",
+		"duration": 0.5
+	},
+	"fadeOut": {
+		"shape": "logarithmic",
+		"duration": 0.5
+	}
+}, {
+	"src": "media/audio/Guitar30.mp3",
+	"start": -4.73129251700682,
+	"end": 10.26968253968252,
+	"name": "Guitar",
+	"cuein": 15,
+	"cueout": 30.00097505668934,
+	"fadeOut": {
+		"shape": "linear",
+		"duration": 0.5
+	}
+}]

@@ -39,6 +39,7 @@ $('#playlist > div > div.playlist-tracks').mouseup(function(){
         {updater:updater},
         function(data,status){
       });
+      console.log(updater);
 });
 var tracks;
 $.getJSON( "../media/json/1stplaylist.json", function(data) {

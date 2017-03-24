@@ -44,12 +44,14 @@ export default class {
     ev.dataTransfer.effectAllowed = 'move';
     ev.dataTransfer.setData('text/plain', '');
     document.addEventListener('dragover', this.ondragover);
+
   }
 
   dragend(e) {
     if (this.active) {
       e.preventDefault();
       this.complete();
+      console.log("track up");
     }
   }
 
