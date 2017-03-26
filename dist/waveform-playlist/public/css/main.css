@@ -147,6 +147,13 @@ body{
     content: "Drop audio file(s) here!"; }
   .track-drop.drag-enter {
     border: 2px solid orange; }
+    .btn:focus, .upload-btn:focus{
+      outline: 0 !important;
+    }
 
+
+    #upload-input {
+  display: none;
+}
 footer {
   margin-top: 2em; }
