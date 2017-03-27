@@ -39,9 +39,27 @@ $('#playlist > div > div.playlist-tracks').mouseup(function(){
         {updater:updater},
         function(data,status){
       });
-      console.log(updater);
+      //console.log(updater);
 });
 
+$('#track-jup').click(function(){
+
+$.getJSON( "../media/json/ontrack.json", function(data) {
+var onetrack = data;
+
+    playlist.load(onetrack).then(function() {
+      //can do stuff with the playlist.
+
+      //initialize the WAV exporter.
+      playlist.initExporter();
+    });
+  })
+  .fail(function() {
+    console.log( "error" );
+  });
+
+        
+});
 
 $('.upload-btn').on('click', function (){
     $('#upload-input').click();
@@ -94,19 +112,45 @@ $('#upload-input').on('change', function(){
             // once the upload reaches 100%, set the progress bar text to done
             if (percentComplete === 100) {
               $('.progress-bar').html('Done');
+
             }
 
           }
 
         }, false);
-
         return xhr;
       }
     });
+    var newTrack = "../media/audio/"+file.name;
+    console.log(newTrack);
+var upload = [ {
+  "src": newTrack,
+  "start": 0,
+  "end": 0,
+  "name": file.name,
+  "cuein": 0,
+  "cueout": 0,
+  "fadeIn": {
+    "shape": "logarithmic",
+    "duration": 0.5
+  },
+  "fadeOut": {
+    "shape": "logarithmic",
+    "duration": 0.5
+  }
+}]
+console.log(upload);
+  playlist.load(upload).then(function() {
+      //can do stuff with the playlist.
+
+      //initialize the WAV exporter.
+      playlist.initExporter();
+    });
+
+
 
   }
 });
-
 
 var tracks;
 $.getJSON( "../media/json/1stplaylist.json", function(data) {
@@ -122,3 +166,4 @@ var tracks = data;
   .fail(function() {
     console.log( "error" );
   });
+

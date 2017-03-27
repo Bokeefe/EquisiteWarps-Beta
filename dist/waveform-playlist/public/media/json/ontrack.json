@@ -1,0 +1,16 @@
+[ {
+	"src": "media/audio/12 - roland hovac - bits.mp3",
+	"start": 7.619047619047622,
+	"end": 0,
+	"name": "rolans",
+	"cuein": 0,
+	"cueout": 0,
+	"fadeIn": {
+		"shape": "logarithmic",
+		"duration": 0.5
+	},
+	"fadeOut": {
+		"shape": "logarithmic",
+		"duration": 0.5
+	}
+}]

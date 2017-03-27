@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 app.use(session({
-	secret: 'hghvjkiouyutfghjbsdfjbnsdf6rtfghiuhgftr5',
+	secret: 'hghvjk@#@Rftfghjbsdfjbnsdf6rtfghiuhgftr5',
 	resave: false,
 	saveUninitialized: false
 }));
@@ -47,7 +47,7 @@ app.post('/upload', function(req, res){
   // specify that we want to allow the user to upload multiple files in a single request
   form.multiples = true;
 
-  // store all uploads in the /uploads directory
+  // store all uploads in the /media/audio/ directory
   form.uploadDir = path.join(__dirname, '/public/media/audio');
 
   // every time a file has been uploaded successfully,
@@ -68,6 +68,7 @@ app.post('/upload', function(req, res){
 
   // parse the incoming request containing the form data
   form.parse(req);
+  
 
 });
 

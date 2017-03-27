@@ -1853,7 +1853,6 @@ var WaveformPlaylist =
 	          src: file,
 	          name: file.name
 	        }]);
-	        console.log(file.name);
 	      });
 
 	      ee.on('trim', function () {
@@ -4824,6 +4823,7 @@ var WaveformPlaylist =
 	  }
 
 	  _createClass(_class, null, [{
+
 	    key: 'createLoader',
 	    value: function createLoader(src, audioContext, ee) {
 	      if (src instanceof Blob) {
@@ -8226,6 +8226,7 @@ var WaveformPlaylist =
 
 	    this.ondragover = function (e) {
 	      if (_this.active) {
+
 	        e.preventDefault();
 	        _this.emitDrag(e.clientX);
 	      }

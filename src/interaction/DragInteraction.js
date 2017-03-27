@@ -50,8 +50,9 @@ export default class {
   dragend(e) {
     if (this.active) {
       e.preventDefault();
-      this.complete();
       console.log("track up");
+      this.complete();
+
     }
   }
 

@@ -252,12 +252,25 @@ $container.on("dragleave", ".track-drop", function(e) {
 $container.on("drop", ".track-drop", function(e) {
   e.preventDefault();
   e.target.classList.remove("drag-enter");
-
+  console.log(e);
   var dropEvent = e.originalEvent;
 
   for (var i = 0; i < dropEvent.dataTransfer.files.length; i++) {
     ee.emit("newtrack", dropEvent.dataTransfer.files[i]);
   }
+});
+
+$container.on("drop", ".track-jup", function(e) {
+
+  console.log('from the emmiter');
+  // e.preventDefault();
+  // e.target.classList.remove("drag-enter");
+
+  // var dropEvent = e.originalEvent;
+
+  // for (var i = 0; i < dropEvent.dataTransfer.files.length; i++) {
+  //   ee.emit("newtrack", dropEvent.dataTransfer.files[i]);
+  // }
 });
 
 $container.on("change", ".time-format", function(e) {
