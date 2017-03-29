@@ -5,3 +5,5 @@
 /lib
 .sass-cache
 /styles
+*.mp3
+*.wav

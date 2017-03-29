@@ -1,0 +1,10 @@
+"brendanokeefe96@gmail.com":{
+	"name":"Cuticle",
+	"password":"password",
+	"playlists":["1stplaylist","2ndplaylist"]
+},
+"another@email.com":{
+	"name":"Elvis",
+	"password":"password",
+	"playlists":["2ndplaylist"]
+}

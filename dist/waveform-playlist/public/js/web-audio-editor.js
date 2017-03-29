@@ -17,6 +17,7 @@ var playlist = WaveformPlaylist.init({
   zoomLevels: [500, 1000, 3000, 5000]
 });
 
+
 $('#delete').click(function(){
   var trackDel = [];
   var trackNow = playlist.getInfo();
@@ -58,7 +59,7 @@ var onetrack = data;
     console.log( "error" );
   });
 
-        
+
 });
 
 $('.upload-btn').on('click', function (){
@@ -84,6 +85,10 @@ $('#upload-input').on('change', function(){
       formData.append('uploads[]', file, file.name);
     }
 
+
+
+
+
     $.ajax({
       url: '/upload',
       type: 'POST',
@@ -92,6 +97,26 @@ $('#upload-input').on('change', function(){
       contentType: false,
       success: function(data){
           console.log('upload successful!\n' + data);
+          var trackPath = "../media/audio/"+file.name;
+          var upload = [ {
+            "src": trackPath,
+            "start": 0,
+            "end": 0,
+            "name": file.name,
+            "cuein": 0,
+            "cueout": 0,
+            "fadeIn": {
+              "shape": "logarithmic",
+              "duration": 0.5
+            },
+            "fadeOut": {
+              "shape": "logarithmic",
+              "duration": 0.5
+            }
+          }];
+          //console.log(upload);
+          addTrack(upload);
+
       },
       xhr: function() {
         // create an XMLHttpRequest
@@ -117,41 +142,35 @@ $('#upload-input').on('change', function(){
 
           }
 
+
+
         }, false);
+
+
         return xhr;
       }
     });
-    var newTrack = "../media/audio/"+file.name;
-    console.log(newTrack);
-var upload = [ {
-  "src": newTrack,
-  "start": 0,
-  "end": 0,
-  "name": file.name,
-  "cuein": 0,
-  "cueout": 0,
-  "fadeIn": {
-    "shape": "logarithmic",
-    "duration": 0.5
-  },
-  "fadeOut": {
-    "shape": "logarithmic",
-    "duration": 0.5
-  }
-}]
-console.log(upload);
-  playlist.load(upload).then(function() {
-      //can do stuff with the playlist.
-
-      //initialize the WAV exporter.
-      playlist.initExporter();
-    });
-
-
 
   }
 });
 
+function addTrack(upload){
+  playlist.load(upload);
+  save();
+}
+
+function save (){
+  var updater = JSON.stringify(playlist.getInfo());
+  console.log(updater);
+      $.post("/update",
+        {updater:updater},
+        function(data,status){
+      });
+}
+$('#saveOrder').click(function(){
+  console.log("this far");
+  save();
+});
 var tracks;
 $.getJSON( "../media/json/1stplaylist.json", function(data) {
 var tracks = data;
@@ -166,4 +185,3 @@ var tracks = data;
   .fail(function() {
     console.log( "error" );
   });
-

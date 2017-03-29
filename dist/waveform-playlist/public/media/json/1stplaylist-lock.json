@@ -1,0 +1,18 @@
+"1stplaylist":
+{
+	"isLocked":true,
+	"trackCount":0,
+	"trackFree":5,
+	"timeSub":0,
+	"admin":"brendanokeefe96@gmail.com",
+	"users":["brendanokeefe96@gmail.com","another@email.com"]
+},
+"2ndplaylist":
+{
+	"isLocked":true,
+	"trackCount":0,
+	"trackFree":5,
+	"timeSub":0,
+	"admin":"another@email.com",
+	"users":["brendanokeefe96@gmail.com","another@email.com"]
+}
