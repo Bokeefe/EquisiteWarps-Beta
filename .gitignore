@@ -1,9 +1,10 @@
 /node_modules
 /coverage
-
+/dist/waveform-playlist/public/media/audio/
 # compiled files
 /lib
 .sass-cache
 /styles
 *.mp3
 *.wav
+
