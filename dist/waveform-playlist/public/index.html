@@ -1,150 +1,257 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
   <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Exquisite Warps beta</title>
 
-  <title>Waveform Playlist</title>
-  <meta name="description" content="Waveform Playlist: The multitrack javascript web audio editor and player.
-">
-
+    <script
+  src="https://code.jquery.com/jquery-3.1.1.js"
+  integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+  crossorigin="anonymous"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <meta name="description" content="Exquisite Warps, browser DAW for bands projects groups">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="./css/main.css">
-  <link rel="canonical" href="https://naomiaro.github.io/waveform-playlist/">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="https://naomiaro.github.io/waveform-playlist/web-audio-editor.html">
   <link rel="alternate" type="application/rss+xml" title="Waveform Playlist" href="https://naomiaro.github.io/waveform-playlist/feed.xml">
 </head>
 
-
+    <style type="text/css">
+      body{
+        margin-left: 10em;
+        margin-right: 10em;
+      }
+    </style>
   <body>
 
-    <header class="site-header">
-
-  <ol class="breadcrumb">
-    <li><a href="/waveform-playlist/">Waveform Playlist</a></li>
-    <li class="active"></li>
-  </ol>
-
-</header>
-
-    <div class="container">
-  <div class="home">
-
-    <h1>Waveform Playlist</h1>
-    <h2>Multitrack Web Audio Editor and Player</h2>
-
-    <ul class="post-list">
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/minimal.html">Minimal Editor</a>
-          </h3>
-          <p class="lead">One audio file with combined channel waveform visual and basic cursor selection for start.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/preselected.html">Load Track With Selection</a>
-          </h3>
-          <p class="lead">Pass a start time and end time in seconds to pre select an area on a track.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/stationarytrack.html">Individual Track State</a>
-          </h3>
-          <p class="lead">Vocals track can not be shifted in time, only the Drums track.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/stem-tracks.html">Stem Tracks</a>
-          </h3>
-          <p class="lead">Mute or solo the different tracks that make up the composition.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/fades.html">Track Fades</a>
-          </h3>
-          <p class="lead">Set fade in and fade out.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/newtracks.html">Working With Local Files</a>
-          </h3>
-          <p class="lead">Drag one or many audio files into the bottom container!</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/track-zoom.html">Track Zoom Configuration</a>
-          </h3>
-          <p class="lead">Set an array of zoom levels in samples per pixel. Multiple canvas elements are used to avoid maximum dimension limits.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/record.html">Record An Audio Track</a>
-          </h3>
-          <p class="lead">Record a track in MediaRecorder enabled browsers. Allows recording over tracks, shows real-time recording progress.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/loading.html">Emitted Loading Events</a>
-          </h3>
-          <p class="lead">Listen to emitted events to create a visual loader.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/web-audio-editor-fill.html">Waveform Editor with seek style set to fill</a>
-          </h3>
-          <p class="lead">Initialization property 'seekStyle' set to 'fill'.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/exclusive-solo.html">Stem Tracks with exclusive solo</a>
-          </h3>
-          <p class="lead">Mute or exclusive solo the different tracks that make up the composition.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/multi-channel.html">Stereo Channel Editor</a>
-          </h3>
-          <p class="lead">One audio file with stereo channel waveform visualization.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="/waveform-playlist/annotations.html">Playlist Annotations</a>
-          </h3>
-          <p class="lead">Annotate the playlist with timed text segments. Drag boundries to adjust timing. Annotations cannot overlap. Dragging an annotation into the space of its neighbour will change the timing of the neighbour's start/end time.</p>
-        </li>
-      
-        <li>
-          <h3>
-            <a class="post-link" href="./web-audio-editor.html">Full Waveform Editor</a>
-          </h3>
-          <p class="lead">Every control and state available.</p>
-        </li>
-      
+<nav class="navbar navbar-inverse" style="width:102%; margin-left:-12px;" >
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Exquisite Warps</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li a><a id="userDisplay" href="#"></a></li>
+      <li><a id="warpDisplay" href="#"></a></li>
     </ul>
   </div>
+</nav>
+<!-- NAVBAR !-->
+<div style="width:auto">
+  <div class="container" id="picker" style="display:none">
+    <h3 id="user"></h3>
+    <div class="container">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <div id="dropdown">
+            <select id="warps">
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="warpname">Create New Project/Warp:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="warpname" placeholder="Gnasty Folk Step">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button id="submit3" type="submit" class="btn btn-default">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div class="container" id="page">
+    <div id="xusername" class="alert alert-danger" style="visibility: hidden;">
+      <strong>Hey!</strong> Invalid Username or Password
+    </div>
+    <h1>Login</h1>
+    <div class="row">
+      <div class="container">
+          <form class="form-horizontal">
+              <div class="form-group">
+                <!-- <label for="name">Name/CallSign/Band/Group/AKA:</label>
+                <input type="text" class="form-control" id="name"> -->
+                <label for="email">Email:</label>
+                <input type="text" class="form-control" id="email">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password">
+                <button id="submit" type="button" class="btn btn-default btn-block">Submit</button>
+            </div>
+          </form>
+        </div>
+    </div>
+    <h1>Register</h1>
+    <div class="row">
+      <div class="container" id="rego">
+          <form class="form-horizontal">
+              <div class="form-group">
+                <label for="name">Name/CallSign/Band/Group/AKA:</label>
+                <input type="text" class="form-control" id="name2">
+                <label for="email">Email:</label>
+                <input type="text" class="form-control" id="email2">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password2">
+                <button id="submit2" type="button" class="btn btn-default btn-block">Submit</button>
+            </div>
+          </form>
+        </div>
+    </div>
+  </div>
+
+
+  <div class="container" id="main" style="display:none; ">
+    <div class="wrapper">
+      <article class="post">
+        <header class="post-header">
+          <!-- <span id="user">User</span> -->
+
+          <!-- <form>
+            <label>Master Volume: <input type="range" min="0" max="100" value="100"
+              class="master-gain input-small form-control"></label>
+          </form> -->
+        </header>
+        <div class="post-content">
+          <div id="top-bar" class="playlist-top-bar">
+            <div class="playlist-toolbar">
+              <div class="btn-group">
+                <span class="btn-pause btn btn-default">
+                  <i class="fa fa-pause"></i>
+                </span>
+                <span class="btn-play btn btn-default">
+                  <i class="fa fa-play"></i>
+                </span>
+                <span class="btn-stop btn btn-default">
+                  <i class="fa fa-stop"></i>
+                </span>
+                <span class="btn-rewind btn btn-default">
+                  <i class="fa fa-fast-backward"></i>
+                </span>
+                <span class="btn-fast-forward btn btn-default">
+                  <i class="fa fa-fast-forward"></i>
+                </span>
+              </div>
+              <div class="btn-group">
+                <span title="zoom in" class="btn-zoom-in btn btn-default">
+                  <i class="fa fa-search-plus"></i>
+                </span>
+                <span title="zoom out" class="btn-zoom-out btn btn-default">
+                  <i class="fa fa-search-minus"></i>
+                </span>
+              </div>
+              <div class="btn-group btn-playlist-state-group">
+                <span class="btn-cursor btn btn-default active" title="select cursor">
+                  <i class="fa fa-headphones"></i>
+                </span>
+                <span class="btn-select btn btn-default" title="select audio region">
+                  <i class="fa fa-italic"></i>
+                </span>
+                <span class="btn-shift btn btn-default" title="shift audio in time">
+                  <i class="fa fa-arrows-h"></i>
+                </span>
+                <span class="btn-fadein btn btn-default" title="set audio fade in">
+                  <i class="fa fa-long-arrow-left"></i>
+                </span>
+                <span class="btn-fadeout btn btn-default" title="set audio fade out">
+                  <i class="fa fa-long-arrow-right"></i>
+                </span>
+              </div>
+  <!--     <div class="btn-group btn-fade-state-group">
+              <span class="btn btn-default btn-logarithmic active">logarithmic</span>
+              <span class="btn btn-default btn-linear">linear</span>
+              <span class="btn btn-default btn-exponential">exponential</span>
+              <span class="btn btn-default btn-scurve">s-curve</span>
+            </div> -->
+            <div class="btn-group btn-select-state-group">
+              <span class="btn-loop btn btn-default disabled" title="loop a selected segment of audio">
+                <i class="fa fa-repeat"></i>
+              </span>
+              <span title="keep only the selected audio region for a track"
+                    class="btn-trim-audio btn btn-default disabled">Trim</span>
+            </div>
+            <div class="btn-group">
+          <span title="delete last track" class="btn-delete-track btn btn-default" id="delete">
+            <i class="fa fa-times"></i> Last <i class="fa fa-music" aria-hidden="true"></i>
+          </span>
+          <span title="Log out" class="btn-new-track btn btn-default" id="logout">
+            <i class="fa fa-log-out"></i> Logout
+          </span>
+          <span title="saveOrder" class="btn-saveOrder btn btn-default" id="saveOrder"><i class="fa fa-floppy-o" aria-hidden="true"></i> </span>
+        </div>
+        <!--     <div class="btn-group">
+
+        <span title="Prints playlist info to console"
+              class="btn btn-info">Print</span>
+        <span title="Clear the playlist's tracks" class="btn btn-clear btn-danger">Clear</span>
+      </div> -->
+      <div class="btn-group">
+        <span title="Download the current work as Wav file" class="btn btn-download btn-danger">
+          <i class="fa fa-download"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div id="playlist"></div>
+  <div class="playlist-bottom-bar">
+    <!-- <form class="form-inline">
+    <select class="time-format form-control">
+      <option value="seconds">seconds</option>
+      <option value="thousandths">thousandths</option>
+      <option value="hh:mm:ss">hh:mm:ss</option>
+      <option value="hh:mm:ss.u">hh:mm:ss + tenths</option>
+      <option value="hh:mm:ss.uu">hh:mm:ss + hundredths</option>
+      <option value="hh:mm:ss.uuu" selected="selected">hh:mm:ss + milliseconds</option>
+    </select>
+    <input type="text" class="audio-start input-small form-control">
+    <input type="text" class="audio-end form-control">
+    <label class="audio-pos">00:00:00.0</label>
+  </form> -->
+
+
+  <!--   <form class="form-inline">
+      <div class="control-group">
+        <label for="time">Seek to time :</label>
+        <input type="number" class="form-control" value="14" id="seektime"/>
+        <span class="btn btn-primary btn-seektotime">Seek !</span>
+      </div>
+    </form> -->
+  </div>
+    <div class="track-drop" style="display:none"></div>
+    <div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <div class="progress">
+                <div class="progress-bar" role="progressbar"></div>
+              </div>
+              <button class="btn btn-lg upload-btn" type="button">Upload File</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <input id="upload-input" type="file" name="uploads[]" ><br>
+  <!--   <div class="loading-data"></div> -->
+          </div>
+        <div>
+      </article>
+    </div>
+  </div>
 </div>
-
-
-    <script>
-
-
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/waveform-playlist.var.js"></script>
+<script type="text/javascript" src="js/web-audio-editor.js"></script>
+<script type="text/javascript" src="js/emitter.js"></script>
+    <script type="text/javascript">
     </script>
-
   </body>
-
 </html>

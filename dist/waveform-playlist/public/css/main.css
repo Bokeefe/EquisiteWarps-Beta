@@ -1,6 +1,8 @@
 body{
   background-color:#9d9d9d;
   color: black;
+  margin-left:1% !important;
+  width:98%;
 }
 .playlist {
   margin: 2em 0; }

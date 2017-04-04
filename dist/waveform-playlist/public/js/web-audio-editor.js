@@ -17,50 +17,168 @@ var playlist = WaveformPlaylist.init({
   zoomLevels: [500, 1000, 3000, 5000]
 });
 
+function allwarps(){
+  $.post( "/allwarps", function( data ) {
+    var options = data;
+    for(var i=0; i< options.length;i++)
+    {
+    //creates option tag
+      jQuery('<option/>', {
+            value: options[i],
+            html: options[i]
+            }).appendTo('#dropdown select'); //appends to select if parent div has id dropdown
+    }
+  });
+}
+allwarps();
 
-$('#delete').click(function(){
-  var trackDel = [];
-  var trackNow = playlist.getInfo();
-  for(var i =0; i < trackNow.length-1;i++) {
-    trackDel.push(trackNow[i]);
-  }
-trackDel = JSON.stringify(trackDel);
-  $.post("/delete",
-    {trackDel:trackDel},
-    function(data,status){
-  if(status==="success"){
-    setTimeout(function(){location.reload();},500);
-  }
+
+
+
+
+
+
+
+
+
+////SUBMIT BUTTONS /////////////////
+
+$("#submit").click(function(){
+    //  var name =  $("#name").val();
+      var email = $("#email").val();
+      var password = $("#password").val();
+  $.post("/login", { //post to the register api
+    email:email,
+    password:password
+  }, function(response){
+    if(response.status === "success") { //if logged in
+    //window.location = './web-audio-editor.html';//takes you to homepage
+    $('#page').hide();
+    $('#picker').show();
+
+    $.get("/userDeets", function(data, status){
+        if (status === "success"){
+
+        $('#userDisplay').html(data.email);
+      } else {
+        $('#userDisplay').html("this is broken");
+      }
+    });
+    } else {
+        console.log(response.status);
+        $("#xusername").show();
+    }
   });
 });
 
-$('#playlist > div > div.playlist-tracks').mouseup(function(){
-  var updater = JSON.stringify(playlist.getInfo());
-      $.post("/update",
-        {updater:updater},
-        function(data,status){
-      });
-      //console.log(updater);
+$("#submit2").click(function(){
+    var name =  $("#name2").val();
+    var email = $("#email2").val();
+    var password = $("#password2").val();
+$.post("/register", { //post to the register api
+    name: name,
+    email: email,
+    password: password
+}, function(response){
+  if(response.status === "success") { //if logged in
+    $('#rego').hide();
+  console.log(session.email);
+     } else {
+        $("#xusername").show();//lol didn't get to test this
+     }
+   });
 });
 
-$('#track-jup').click(function(){
+$("#submit3").click(function(e){
+  e.preventDefault();
+  var warpName =  $("#warpname").val();
+  if(warpName===""){ //go with dropdown selection
+    e.preventDefault();
+  var warpPick = $('#warps option:selected').text();
 
-$.getJSON( "../media/json/ontrack.json", function(data) {
-var onetrack = data;
+  $.post( "warpPick", { warpPick: warpPick }, function(response){
 
-    playlist.load(onetrack).then(function() {
+    if(response.status === "success") { //if logged in
+    var corpse = response.data;
+    $('#picker').hide();
+    $('#main').show();
+    $.get("/userDeets", function(data, status){
+        if (status === "success"){
+
+
+        $('#warpDisplay').html(data.warp);
+      } else {
+        $('#warpDisplay').html("this is broken");
+      }
+    });
+    playlist.load(corpse[0].warp).then(function() {
       //can do stuff with the playlist.
 
       //initialize the WAV exporter.
       playlist.initExporter();
     });
-  })
-  .fail(function() {
-    console.log( "error" );
-  });
+       } else {
+          $("#xusername").show();//lol didn't get to test this
+       }
+     });
+  } else {
+  $.post("/newWarp", { //post to the register api
+      warpName : warpName
+  }, function(response){
+    console.log(response);
+    if(response.status === "success") { //if logged in
 
-
+       } else {
+          $("#xusername").show();//lol didn't get to test this
+       }
+     });
+   }
 });
+/////////////////////////////////////////////////////////////////////
+// $.get("/username", function(data, status){
+//     if (status === "success"){
+//       //console.log(JSON.stringify(data));
+//     $('#user').html(data);
+//   } else {
+//     $('#result').html("this is broken");
+//   }
+// });
+//////// EVENT LISTENERS //////////////////////////
+$('#delete').click(function(){
+  var updater = [];
+  var trackNow = playlist.getInfo();
+  for(var i =0; i < trackNow.length-1;i++) {
+    updater.push(trackNow[i]);
+  }
+    updater = JSON.stringify(updater);
+    $.post("/delete",
+      {updater:updater,
+      name:name},
+      function(data,status){
+        //data = playlist.getInfo();
+        data = JSON.stringify(data);
+        save(data);
+    });
+});
+
+$('#logout').click(function(){
+  $.post("/logout", function (data, status){
+    if(status ==="success"){
+      window.location = "/";
+      $('#main').hide();
+      $('#page').show();
+    } else {
+      reload();
+    }
+  });
+});
+
+$('#playlist > div > div.playlist-tracks').mouseup(function(){
+  var data = playlist.getInfo();
+  data = JSON.stringify(data);
+  save(data);
+});
+
 
 $('.upload-btn').on('click', function (){
     $('#upload-input').click();
@@ -84,10 +202,6 @@ $('#upload-input').on('change', function(){
       // add the files to formData object for the data payload
       formData.append('uploads[]', file, file.name);
     }
-
-
-
-
 
     $.ajax({
       url: '/upload',
@@ -116,7 +230,6 @@ $('#upload-input').on('change', function(){
           }];
           //console.log(upload);
           addTrack(upload);
-
       },
       xhr: function() {
         // create an XMLHttpRequest
@@ -137,13 +250,8 @@ $('#upload-input').on('change', function(){
             // once the upload reaches 100%, set the progress bar text to done
             if (percentComplete === 100) {
               $('.progress-bar').html('Done');
-
             }
-
           }
-
-
-
         }, false);
 
 
@@ -153,35 +261,49 @@ $('#upload-input').on('change', function(){
 
   }
 });
-
+///////////// FUNCTIONS TO CALL /////////////////////////
 function addTrack(upload){
-  playlist.load(upload);
-  save();
+
+  playlist.load(upload).then(function() {
+       //can do stuff with the playlist.
+       var data = playlist.getInfo();
+       data = JSON.stringify(data);
+        save(data);
+       playlist.initExporter();
+     });
+
 }
 
-function save (){
-  var updater = JSON.stringify(playlist.getInfo());
-  console.log(updater);
+function save (data){
+//cara  var name = "crap";//get request for session name
+  var updater = data;
+  console.log(data);
       $.post("/update",
         {updater:updater},
         function(data,status){
+
+
+          location.reload();
+          // playlist.load(data).then(function() {
+          // playlist.initExporter();
+          //     });
       });
 }
-$('#saveOrder').click(function(){
-  console.log("this far");
-  save();
-});
-var tracks;
-$.getJSON( "../media/json/1stplaylist.json", function(data) {
-var tracks = data;
 
-    playlist.load(tracks).then(function() {
-      //can do stuff with the playlist.
 
-      //initialize the WAV exporter.
-      playlist.initExporter();
-    });
-  })
-  .fail(function() {
-    console.log( "error" );
-  });
+
+
+//
+// $.getJSON( "../media/json/1stplaylist.json", function(data) {
+// var tracks = data;
+//
+//     playlist.load(tracks).then(function() {
+//       //can do stuff with the playlist.
+//
+//       //initialize the WAV exporter.
+//       playlist.initExporter();
+//     });
+//   })
+//   .fail(function() {
+//     console.log( "error" );
+//   });

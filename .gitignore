@@ -1,4 +1,5 @@
 /node_modules
+dist/waveform-playlist/data
 /coverage
 /dist/waveform-playlist/public/media/audio/
 # compiled files
@@ -7,4 +8,5 @@
 /styles
 *.mp3
 *.wav
-
+dist/waveform-playlist/public/js/Creds.js
+dist/waveform-playlist/public/media/json/creds.json
