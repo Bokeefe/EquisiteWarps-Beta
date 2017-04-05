@@ -34,7 +34,9 @@ allwarps();
 
 
 $.get("/userDeets", function(data, status){
-    if (status === "success"){
+//
+    if (typeof data.email !== "undefined"){
+        console.log(data.email);
         console.log(data);
         $('#page').hide();
         $('#picker').hide();
