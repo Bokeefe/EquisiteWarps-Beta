@@ -33,9 +33,64 @@ function allwarps(){
 allwarps();
 
 
+$.get("/userDeets", function(data, status){
+    if (status === "success"){
+        console.log(data);
+        $('#page').hide();
+        $('#picker').hide();
+        $('#main').show();
+        $('#warpDisplay').html(data.warp);
+        $('#userDisplay').html(data.email);
 
+        playlist.load(data.tracks).then(function() {
+          //can do stuff with the playlist.
 
+          //initialize the WAV exporter.
+          playlist.initExporter();
+        });
+    }
+});
 
+//
+// var warpPick = $('#warps option:selected').text();
+//
+// $.post( "warpPick", { warpPick: warpPick }, function(response){
+//
+//   if(response.status === "success") { //if logged in
+//   var corpse = response.data;
+//   $('#picker').hide();
+//   $('#main').show();
+//   $.get("/userDeets", function(data, status){
+//       if (status === "success"){
+//
+//
+//       $('#warpDisplay').html(data.warp);
+//     } else {
+//       $('#warpDisplay').html("this is broken");
+//     }
+//   });
+//   playlist.load(corpse[0].warp).then(function() {
+//     //can do stuff with the playlist.
+//
+//     //initialize the WAV exporter.
+//     playlist.initExporter();
+//   });
+//      } else {
+//         $("#xusername").show();//lol didn't get to test this
+//      }
+//    });
+// } else {
+// $.post("/newWarp", { //post to the register api
+//     warpName : warpName
+// }, function(response){
+//   //console.log(response);
+//   if(response.status === "success") { //if logged in
+//
+//      } else {
+//         $("#xusername").show();//lol didn't get to test this
+//      }
+//    });
+//  }
 
 
 
@@ -125,7 +180,7 @@ $("#submit3").click(function(e){
   $.post("/newWarp", { //post to the register api
       warpName : warpName
   }, function(response){
-    console.log(response);
+    //console.log(response);
     if(response.status === "success") { //if logged in
 
        } else {
@@ -157,7 +212,7 @@ $('#delete').click(function(){
       function(data,status){
         //data = playlist.getInfo();
         data = JSON.stringify(data);
-        save(data);
+        deleter(data);
     });
 });
 
@@ -277,16 +332,29 @@ function addTrack(upload){
 function save (data){
 //cara  var name = "crap";//get request for session name
   var updater = data;
-  console.log(data);
+  //console.log(data);
       $.post("/update",
         {updater:updater},
         function(data,status){
 
 
-          location.reload();
+        //   location.reload();
           // playlist.load(data).then(function() {
           // playlist.initExporter();
           //     });
+      });
+}
+function deleter (data){
+//cara  var name = "crap";//get request for session name
+  var updater = data;
+  //console.log(data);
+      $.post("/update",
+        {updater:updater},
+        function(data,status){
+
+
+        location.reload();
+
       });
 }
 
