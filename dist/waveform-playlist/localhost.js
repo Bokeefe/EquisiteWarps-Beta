@@ -15,8 +15,9 @@ var Corpse = require('./public/js/CorpseSchema.js')(mongoose);
 var http = require("http").Server(app);
 var Creds = require('./public/media/json/creds.json');
 var uristring = process.env.MONGODB_URI ||'mongodb://localhost';
+//var uristring = process.env.MONGODB_URI || Creds.real_URI;
 var PORT = process.env.PORT || 3000;
-//var PORT = 3000;
+console.log(Creds.real_URI);
 
 
 mongoose.Promise = global.Promise;
