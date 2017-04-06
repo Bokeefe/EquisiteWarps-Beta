@@ -1,11 +1,11 @@
 {
-  "name": "waveform-playlist",
-  "description": "Multiple track web audio editor and player with waveform preview",
-  "version": "2.10.1",
-  "main": "lib/app.js",
-  "author": "Naomi Aro",
+  "name": "Exquisite Warps",
+  "description": "Collaborative mix-tape/composer platform in the style of Exquisite Corpse",
+  "version": "1.0",
+  "main": "dist/waveform-playlist/server.js",
+  "author": "Brendan O'Keefe",
   "license": "MIT",
-  "website": "http://naomiaro.github.io",
+  "website": "brendan.okeefefam.com",
   "babel": {
     "presets": [
       "es2015",
@@ -105,7 +105,7 @@
     "webaudio"
   ],
   "bugs": {
-    "url": "https://github.com/naomiaro/waveform-playlist/issues"
+    "email": "etherealveil@gmail.com"
   },
-  "homepage": "http://naomiaro.github.io/waveform-playlist"
+  "homepage": "brendan.okeefefam.com"
 }
