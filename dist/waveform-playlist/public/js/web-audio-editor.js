@@ -41,7 +41,7 @@ $.get("/userDeets", function(data, status){
         $('#page').hide();
         $('#picker').hide();
         $('#main').show();
-        $('#warpDisplay').html(data.warp);
+        $('.warpDisplay').html(data.warp);
         $('#userDisplay').html(data.email);
 
         playlist.load(data.tracks).then(function() {
@@ -66,9 +66,9 @@ $.get("/userDeets", function(data, status){
 //       if (status === "success"){
 //
 //
-//       $('#warpDisplay').html(data.warp);
+//       $('.warpDisplay').html(data.warp);
 //     } else {
-//       $('#warpDisplay').html("this is broken");
+//       $('.warpDisplay').html("this is broken");
 //     }
 //   });
 //   playlist.load(corpse[0].warp).then(function() {
@@ -163,9 +163,9 @@ $("#submit3").click(function(e){
         if (status === "success"){
 
 
-        $('#warpDisplay').html(data.warp);
+        $('.warpDisplay').html(data.warp);
       } else {
-        $('#warpDisplay').html("this is broken");
+        $('.warpDisplay').html("this is broken");
       }
     });
     playlist.load(corpse[0].warp).then(function() {
@@ -201,6 +201,12 @@ $("#submit3").click(function(e){
 //   }
 // });
 //////// EVENT LISTENERS //////////////////////////
+$('#chopper').click(function(){
+    var selection = playlist.getTimeSelection();
+    selection = JSON.stringify(selection.start);
+    $('#chopperDisplay').html(selection);
+});
+
 $('#delete').click(function(){
   var updater = [];
   var trackNow = playlist.getInfo();
@@ -231,6 +237,7 @@ $('#logout').click(function(){
 });
 
 $('#playlist > div > div.playlist-tracks').mouseup(function(){
+console.log(playlist.getTimeSelection());
   var data = playlist.getInfo();
   data = JSON.stringify(data);
   save(data);

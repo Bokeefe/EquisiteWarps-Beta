@@ -34,8 +34,10 @@
       <a class="navbar-brand" href="#">Exquisite Warps</a>
     </div>
     <ul class="nav navbar-nav">
-      <li a><a id="userDisplay" href="#"></a></li>
-      <li><a id="warpDisplay" href="#"></a></li>
+      <li><a id="userDisplay" href="#"></a></li>
+      <li ><a class="warpDisplay" href="#"></a></li>
+       <li><a id="bpmDisplay" href="#"></a></li>
+       <li><a id="chopperDisplay" href="#"></a></li>
     </ul>
   </div>
 </nav>
@@ -183,7 +185,7 @@
           <span title="Log out" class="btn-new-track btn btn-default" id="logout">
             <i class="fa fa-log-out"></i> Logout
           </span>
-          <span title="saveOrder" class="btn-saveOrder btn btn-default" id="saveOrder"><i class="fa fa-floppy-o" aria-hidden="true"></i> </span>
+          <span title="chopper" class="btn-chopper btn btn-default" id="chopper"><i class="fa fa-bolt" aria-hidden="true"></i> </span>
         </div>
         <!--     <div class="btn-group">
 
@@ -244,8 +246,42 @@
           </div>
         <div>
       </article>
+      <table class="table">
+       <thead>
+         <tr>
+           <th class="warpDisplay">WarpName</th>
+
+
+         </tr>
+       </thead>
+       <tbody>
+         <tr>
+           <td>Track Count</td>
+           <td>1</td>
+
+         </tr>
+         <tr >
+           <td>Total time</td>
+           <td>3:23</td>
+
+         </tr>
+         <tr >
+           <td>BPM</td>
+           <td>120</td>
+
+         </tr>
+         <tr >
+           <td >Last User</td>
+           <td>Dooley</td>
+
+         </tr>
+
+       </tbody>
+     </table>
     </div>
   </div>
+
+</div>
 </div>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/waveform-playlist.var.js"></script>

@@ -6,7 +6,9 @@ This platform was made with musicians in mind. It also could be used to make col
 
 Native Javascript, Web Audio API, Node, Mongoose, MongoDB
 
-<a href="https://www.youtube.com/watch?v=KDwkkep8ER4&t=5s">For a video DEMO go here</a>
+
+
+<a href="https://www.youtube.com/watch?v=KDwkkep8ER4&t=5s">For a video DEMO of a really beta version go here</a>
 
 
 

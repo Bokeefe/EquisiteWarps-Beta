@@ -154,8 +154,13 @@ app.post('/warpPick', (req, res) => {
 
 	Corpse.find({warpName: warpPick}, (err, data) => {
 		//req.session.warpName = data[0].warpName;
+		
 		req.session.warp = warpPick;
+		req.session.bpm = data.bpm;
+		req.session.trackCount = data.trackCount;
+		req.session.admin = data.admin;
 
+		console.log(data);
 		res.send({status:"success",data});
 		// session=req.session;
 		// res.send(session.warp);
@@ -180,14 +185,14 @@ app.post('/update', (req, res) => {
 			});
 });
 
-// app.post('/delete', (req, res) => {
-// 			var updater = JSON.parse(req.body.updater);
-// 			var conditions = { warpName: req.body.name },
-// 			  update = { warp: updater};
-// 			Corpse.update(conditions, update, function (){
-// 				res.send(updater);
-// 			});
-// });
+app.post('/delete', (req, res) => {
+			var updater = JSON.parse(req.body.updater);
+			var conditions = { warpName: req.body.name },
+			  update = { warp: updater};
+			Corpse.update(conditions, update, function (){
+				res.send(updater);
+			});
+});
 
 
 app.post('/upload', function(req, res){
