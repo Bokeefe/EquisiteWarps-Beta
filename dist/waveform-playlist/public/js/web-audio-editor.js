@@ -122,7 +122,7 @@ $("#submit").click(function(){
       }
     });
     } else {
-        console.log(response.status);
+        //console.log(response.status);
         $("#xusername").show();
     }
   });
@@ -139,7 +139,7 @@ $.post("/register", { //post to the register api
 }, function(response){
   if(response.status === "success") { //if logged in
     $('#rego').hide();
-  console.log(session.email);
+ // console.log(session.email);
      } else {
         $("#xusername").show();//lol didn't get to test this
      }
@@ -274,7 +274,7 @@ $('#upload-input').on('change', function(){
       processData: false,
       contentType: false,
       success: function(data){
-          console.log('upload successful!\n' + data);
+          //console.log('upload successful!\n' + data);
           var trackPath = "../media/audio/"+file.name;
           var upload = [ {
             "src": trackPath,
@@ -330,15 +330,20 @@ function addTrack(upload){
 
   playlist.load(upload).then(function() {
        //can do stuff with the playlist.
+
+       playlist.initExporter();
        var data = playlist.getInfo();
        data = JSON.stringify(data);
-        save(data);
-       playlist.initExporter();
+       save(data);
+
      });
+
+
 
 }
 
 function save (data){
+    console.log("SAVE FUN CJITON");
 //cara  var name = "crap";//get request for session name
   var updater = data;
   //console.log(data);
