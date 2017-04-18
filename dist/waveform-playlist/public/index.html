@@ -33,10 +33,45 @@
     <div class="navbar-header">
       <a class="navbar-brand" href="#">Exquisite Warps</a>
     </div>
-    <ul class="nav navbar-nav">
+    <ul class="nav navbar-nav navbar-right">
       <li><a id="userDisplay" href="#"></a></li>
-      <li ><a class="warpDisplay" href="#"></a></li>
-       <li><a id="bpmDisplay" href="#"></a></li>
+
+       <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" id="warpDisplay">Track Details
+        <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a id="trackCount">Track Count</a></li>
+          <li><a id="trackFree">Track Free</a></li>
+          <li><a id="timeSub">Time Sub</a></li>
+          <li><a id="BPM">BPM</a></li>
+          <li><a id="admin">Admin Email</a></li>
+          <li><a id="users">Users</a></li>
+        </ul>
+        <li class="dropdown">
+         <a class="dropdown-toggle" data-toggle="dropdown">the fuk <i class="fa fa-question-circle-o fa-3" aria-hidden="true"></i>
+         <span class="caret"></span></a>
+         <ul class="dropdown-menu">
+           <li><a>The idea behind this audio game is <br>based on the artists's game: </a></li>
+           <li><a href="https://en.wikipedia.org/wiki/Exquisite_corpse" target="_blank" style="font-weight:900; float:right;">Exquisite Corpse</a></li>
+           <li><a>Whoever starts the new Warp (admin) <br>
+                  sets the amount of people they want to<br>
+                  contribute to it and also they put in<br>
+                  the first audio/track. Then they cut <br>
+                  just a snippet off the end to send to<br>
+                  the next user. The next warper will not<br>
+                  be able to hear anything before this <br>
+                  snippet. That warper should take in the<br>
+                  song snippet or sentence and use it as <br>
+                  inspiration to add their bit.<br>
+                  And so on...and so on...<br>
+                  Until the number of contributers is <br>
+                  reached. Then the warp is unlocked. <br>
+                  Everyone can play the whole creation<br>
+                  and download a WAV file of the whole<br>
+                  damn thing.</a></li>
+
+
+       </ul>
        <li><a id="chopperDisplay" href="#"></a></li>
     </ul>
   </div>
@@ -47,31 +82,60 @@
 <div style="width:auto">
   <div class="container" id="picker" style="display:none">
     <h3 id="user"></h3>
-    <div class="container">
+    <div class="container" >
       <form class="form-horizontal">
-        <div class="form-group">
-          <div id="dropdown">
+            <label class="control-label col-sm-2">Warps you are on:</label>
+          <div class="col-sm-offset-2 col-sm-10" id="dropdown">
             <select id="warps">
             </select>
           </div>
         </div>
+        <hr>
         <div class="form-group">
-          <label class="control-label col-sm-2" for="warpname">Create New Project/Warp:</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="warpname" placeholder="Gnasty Folk Step">
+            <div class="row">
+              <label class="control-label col-sm-2" for="warpname">New Project/Warp Name:</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="warpname" placeholder="Baroque Footwork">
+              </div>
+              <div class="col-sm-3">
+                  <select class="form-control" id="sel1">
+                    <option>Number of Contributors:</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                  </select>
+                </div>
+            </div>
+<br><br>
+            <div class="row">
+             <label class="control-label col-sm-2" for="warpname">BPM (if u know it):</label>
+             <div class="col-sm-5">
+               <input type="text" class="form-control" placeholder="BPM (if u kno it)">
+             </div>
+             <div class="col-sm-5">
+               <button id="submit3" type="submit" class="btn btn-default" style="width:100%;">Submit</button>
+             </div>
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
+
+        <!-- <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
             <button id="submit3" type="submit" class="btn btn-default">Submit</button>
           </div>
-        </div>
+        </div> -->
       </form>
     </div>
   </div>
 
-
+<!-- PAGE ONE -->
   <div class="container" id="page">
     <div id="xusername" class="alert alert-danger" style="display:none;">
       <strong>Hey!</strong> Invalid Username or Password
@@ -110,7 +174,7 @@
     </div>
   </div>
 
-
+<!-- PAGE THREE AKA PLAYLIST -->
   <div class="container" id="main" style="display:none; ">
     <div class="wrapper">
       <article class="post">
@@ -229,6 +293,8 @@
     </form> -->
   </div>
     <div class="track-drop" style="display:none"></div>
+
+
     <div>
       <div class="row">
         <div class="col-xs-12">
@@ -248,43 +314,32 @@
           </div>
         <div>
       </article>
-      <table class="table">
-       <thead>
-         <tr>
-           <th class="warpDisplay">WarpName</th>
-
-
-         </tr>
-       </thead>
-       <tbody>
-         <tr>
-           <td>Track Count</td>
-           <td>1</td>
-
-         </tr>
-         <tr >
-           <td>Total time</td>
-           <td>3:23</td>
-
-         </tr>
-         <tr >
-           <td>BPM</td>
-           <td>120</td>
-
-         </tr>
-         <tr >
-           <td >Last User</td>
-           <td>Dooley</td>
-
-         </tr>
-
-       </tbody>
-     </table>
     </div>
   </div>
+<!-- END PLAYLIST -->
 
-</div>
-</div>
+<!-- BOTTOM NAVBAR -->
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Send Warp to next User</a>
+    </div>
+    <form class="navbar-form navbar-right">
+      <div class="form-group">
+        <input type="text" class="form-control" style="width:225px" placeholder="2) Enter Next Warper's Email">
+      </div>
+      <button type="submit" class="btn btn-default">3) Send</button>
+    </form>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#">1) Cut This Warp <i class="fa fa-scissors" aria-hidden="true"></i></a></li>
+      <!-- <li><a href="#">Page 2</a></li>
+      <li><a href="#">Page 3</a></li> -->
+    </ul>
+  </div>
+</nav>
+
+
+
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/waveform-playlist.var.js"></script>
 <script type="text/javascript" src="js/web-audio-editor.js"></script>

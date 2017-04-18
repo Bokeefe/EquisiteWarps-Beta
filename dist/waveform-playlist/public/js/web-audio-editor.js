@@ -36,12 +36,12 @@ allwarps();
 $.get("/userDeets", function(data, status){
 //
     if (typeof data.email !== "undefined"){
-        console.log(data.email);
-        console.log(data);
+        //console.log(data.email);
+        //console.log(data);
         $('#page').hide();
         $('#picker').hide();
         $('#main').show();
-        $('.warpDisplay').html(data.warp);
+        $('#warpDisplay').html(data.warp);
         $('#userDisplay').html(data.email);
 
         playlist.load(data.tracks).then(function() {
@@ -66,9 +66,9 @@ $.get("/userDeets", function(data, status){
 //       if (status === "success"){
 //
 //
-//       $('.warpDisplay').html(data.warp);
+//       $('#warpDisplay').html(data.warp);
 //     } else {
-//       $('.warpDisplay').html("this is broken");
+//       $('#warpDisplay').html("this is broken");
 //     }
 //   });
 //   playlist.load(corpse[0].warp).then(function() {
@@ -161,16 +161,20 @@ $("#submit3").click(function(e){
     $('#main').show();
     $.get("/userDeets", function(data, status){
         if (status === "success"){
-
-
-        $('.warpDisplay').html(data.warp);
+        $('#warpDisplay').html(corpse[0].warpName);
+        $('#trackFree').html("Free The warp @ "+corpse[0].trackFree);
+        $('#BPM').html("BPM: "+corpse[0].bpm);
+        $('#timeSub').html("TimeSubtracted: "+corpse[0].timeSub);
+        $('#admin').html("Warp Keeper: "+corpse[0].admin);
+        $('#users').html("Users: "+corpse[0].users);
       } else {
-        $('.warpDisplay').html("this is broken");
+        $('#warpDisplay').html("this is broken");
       }
     });
     playlist.load(corpse[0].warp).then(function() {
       //can do stuff with the playlist.
-
+      var tracks = playlist.getInfo();
+      $('#trackCount').html("# Tracks So Far: "+ tracks.length);
       //initialize the WAV exporter.
       playlist.initExporter();
     });
@@ -237,7 +241,7 @@ $('#logout').click(function(){
 });
 
 $('#playlist > div > div.playlist-tracks').mouseup(function(){
-console.log(playlist.getTimeSelection());
+//console.log(playlist.getTimeSelection());
   var data = playlist.getInfo();
   data = JSON.stringify(data);
   save(data);
@@ -327,7 +331,6 @@ $('#upload-input').on('change', function(){
 });
 ///////////// FUNCTIONS TO CALL /////////////////////////
 function addTrack(upload){
-
   playlist.load(upload).then(function() {
        //can do stuff with the playlist.
 
@@ -337,25 +340,17 @@ function addTrack(upload){
        save(data);
 
      });
-
-
-
 }
 
 function save (data){
-    console.log("SAVE FUN CJITON");
-//cara  var name = "crap";//get request for session name
+    console.log("SAVE Function");
+
   var updater = data;
-  //console.log(data);
+
       $.post("/update",
         {updater:updater},
         function(data,status){
 
-
-        //   location.reload();
-          // playlist.load(data).then(function() {
-          // playlist.initExporter();
-          //     });
       });
 }
 function deleter (data){

@@ -62,6 +62,7 @@ app.post('/allwarps',(req,res)=>{
 
 app.get("/userDeets",(req,res)=> {
 	   session=req.session;
+
 		 res.send(session);
 });
 
@@ -148,19 +149,20 @@ app.post('/newWarp', (req, res) => {//api to register a new user
 		}
 	});
 });
+
 app.post('/warpPick', (req, res) => {
 	//console.log(req.body.warpPick);
 	var warpPick = req.body.warpPick;
 
 	Corpse.find({warpName: warpPick}, (err, data) => {
 		//req.session.warpName = data[0].warpName;
-		
+
 		req.session.warp = warpPick;
 		req.session.bpm = data.bpm;
 		req.session.trackCount = data.trackCount;
 		req.session.admin = data.admin;
 
-		console.log(data);
+		
 		res.send({status:"success",data});
 		// session=req.session;
 		// res.send(session.warp);
