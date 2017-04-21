@@ -2500,7 +2500,6 @@ var WaveformPlaylist =
 	    value: function renderTimeScale() {
 	      var controlWidth = this.controls.show ? this.controls.width : 0;
 	      var timeScale = new _TimeScale2.default(this.duration, this.scrollLeft, this.samplesPerPixel, this.sampleRate, controlWidth);
-
 	      return timeScale.render();
 	    }
 	  }, {

@@ -10,13 +10,15 @@ const MongoStore = require('connect-mongo')(session);
 var bodyParser = require('body-parser');
 var formidable = require('formidable');
 var app = express();
+var helper = require('sendgrid').mail;
 var User = require('./public/js/UserSchema.js')(mongoose);
 var Corpse = require('./public/js/CorpseSchema.js')(mongoose);
 var http = require("http").Server(app);
 var Creds = require('./public/media/json/creds.json');
+var helper = require('sendgrid').mail;
 var uristring = process.env.MONGODB_URI ||'mongodb://localhost';
 //var uristring = process.env.MONGODB_URI || Creds.real_URI;
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 4000;
 console.log(Creds.real_URI);
 
 
@@ -161,8 +163,6 @@ app.post('/warpPick', (req, res) => {
 		req.session.bpm = data.bpm;
 		req.session.trackCount = data.trackCount;
 		req.session.admin = data.admin;
-
-		
 		res.send({status:"success",data});
 		// session=req.session;
 		// res.send(session.warp);
@@ -177,7 +177,6 @@ app.post('/logout', (req, res) => {//logout api
 
 app.post('/update', (req, res) => {
 			 var updater = JSON.parse(req.body.updater);
-
 			req.session.tracks = updater;
 			var conditions = { warpName: req.session.warp },
 			  update = { warp: updater};
@@ -229,6 +228,62 @@ app.post('/upload', function(req, res){
 
 
 });
+
+app.post('/timeSub', (req, res) => {
+
+            // console.log(req.body.lastTrack);
+            // console.log(req.body.timeSubNum);
+
+            	Corpse.find({warpName: req.session.warp}, (err, data) => {
+                        var snippet = JSON.parse(req.body.timeSubNum);
+                        var newTimeSub = data[0].timeSub + snippet;
+                        var newWarp = data[0].warp;
+
+                        for (var i = 0; i < newWarp.length; i++) {
+                           newWarp[i].start =newWarp[i].start - snippet;
+                           newWarp[i].end =newWarp[i].end - snippet;
+                        }
+
+            			var conditions = { warpName: req.session.warp },
+            			  update = { timeSub: newTimeSub,
+                                    warp:newWarp};
+            			Corpse.update(conditions, update, function (){////add to timeSub
+            				res.send(data);
+
+            			});
+
+
+
+
+
+                });
+
+
+});
+ var SENDGRID_API_KEY = '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';
+
+ from_email = new helper.Email("brndnokf@yahoo.com");
+ to_email = new helper.Email("etherealveil@gmail.com");
+ subject = "Sending with SendGrid is Fun";
+ content = new helper.Content("text/plain", "and easy to do anywhere, even with Node.js");
+ mail = new helper.Mail(from_email, subject, to_email, content);
+
+ var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
+ var request = sg.emptyRequest({
+   method: 'POST',
+   path: '/v3/mail/send',
+   body: mail.toJSON()
+ });
+
+ sg.API(request, function(error, response) {
+   console.log(response.statusCode);
+   console.log(response.body);
+   console.log(response.headers);
+ });
+
+
+
+
 
 ////////
 app.use(express.static('public'));

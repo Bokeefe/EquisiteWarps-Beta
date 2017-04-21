@@ -4,18 +4,20 @@ var playlist = WaveformPlaylist.init({
   container: document.getElementById("playlist"),
   state: 'cursor',
   colors: {
-    waveOutlineColor: '#E0EFF1',
+    waveOutlineColor: 'white',
     timeColor: 'grey',
     fadeColor: 'black'
   },
   timescale: true,
   controls: {
     show: true, //whether or not to include the track controls
-    width: 200 //width of controls in pixels
+    width: 150 //width of controls in pixels
   },
   seekStyle : 'line',
   zoomLevels: [500, 1000, 3000, 5000]
 });
+
+var isUnlocked;
 
 function allwarps(){
   $.post( "/allwarps", function( data ) {
@@ -50,6 +52,8 @@ $.get("/userDeets", function(data, status){
           //initialize the WAV exporter.
           playlist.initExporter();
         });
+    } else {
+        //you could put an explainer thing here?
     }
 });
 
@@ -161,23 +165,54 @@ $("#submit3").click(function(e){
     $('#main').show();
     $.get("/userDeets", function(data, status){
         if (status === "success"){
+
         $('#warpDisplay').html(corpse[0].warpName);
         $('#trackFree').html("Free The warp @ "+corpse[0].trackFree);
         $('#BPM').html("BPM: "+corpse[0].bpm);
         $('#timeSub').html("TimeSubtracted: "+corpse[0].timeSub);
         $('#admin').html("Warp Keeper: "+corpse[0].admin);
         $('#users').html("Users: "+corpse[0].users);
+        $('#bottomBar').show();
+
       } else {
-        $('#warpDisplay').html("this is broken");
+        alert("messed up on warpPick");
       }
     });
-    playlist.load(corpse[0].warp).then(function() {
-      //can do stuff with the playlist.
-      var tracks = playlist.getInfo();
-      $('#trackCount').html("# Tracks So Far: "+ tracks.length);
-      //initialize the WAV exporter.
-      playlist.initExporter();
-    });
+    //
+    // if (corpse[0].warp.length >= corpse[0].trackFree){////UNLOCKED
+        playlist.load(corpse[0].warp).then(function() {
+          //can do stuff with the playlist.
+          var tracks = playlist.getInfo();
+
+
+          $('#trackCount').html("# Tracks So Far: "+ tracks.length);
+          //initialize the WAV exporter.
+          playlist.initExporter();
+        });
+        $('#warpLock').html('<i class="fa fa-unlock" aria-hidden="true"></i>');
+        isUnlocked =true;
+
+        $('#unlockedGroup').show();
+    //
+    // } else {////LOCKED
+    //     var lastTrack = corpse[0].warp;
+    //
+    //         lastTrack = lastTrack[lastTrack.length-1];
+    //
+    //
+    //     playlist.load([lastTrack]).then(function() {
+    //       //can do stuff with the playlist.
+    //
+    //
+    //
+    //       $('#trackCount').html("# Tracks So Far: "+ corpse[0].trackCount);
+    //       //initialize the WAV exporter.
+    //       playlist.initExporter();
+    //     });
+    //     $('#warpLock').html('<i class="fa fa-lock" aria-hidden="true"></i>');
+    //     isUnlocked =false;
+    // }
+
        } else {
           $("#xusername").show();//lol didn't get to test this
        }
@@ -208,9 +243,10 @@ $("#submit3").click(function(e){
 $('#chopper').click(function(){
     var selection = playlist.getTimeSelection();
     selection = JSON.stringify(selection.start);
+    timeSub(selection);
     $('#chopperDisplay').html(selection);
 });
-
+$('').css('display','none');
 $('#delete').click(function(){
   var updater = [];
   var trackNow = playlist.getInfo();
@@ -224,7 +260,7 @@ $('#delete').click(function(){
       function(data,status){
         //data = playlist.getInfo();
         data = JSON.stringify(data);
-        deleter(data);
+        refreshSave(data);
     });
 });
 
@@ -244,7 +280,7 @@ $('#playlist > div > div.playlist-tracks').mouseup(function(){
 //console.log(playlist.getTimeSelection());
   var data = playlist.getInfo();
   data = JSON.stringify(data);
-  save(data);
+  //save(data);
 });
 
 
@@ -330,6 +366,26 @@ $('#upload-input').on('change', function(){
   }
 });
 ///////////// FUNCTIONS TO CALL /////////////////////////
+function timeSub (data){
+
+    var trackNow = playlist.getInfo();
+    var lastTrack = trackNow[trackNow.length-1];
+
+      timeSubNum = JSON.stringify(data);
+      lastTrack = JSON.stringify(lastTrack);
+
+      $.post("/timeSub",
+        {
+        timeSubNum:timeSubNum,
+        lastTrack:lastTrack},
+        function(data,status){
+            console.log(playlist.getInfo());
+            console.log(data[0].warp);
+            data = data[0].warp;
+            data = JSON.stringify(data);
+            refreshSave(data);
+      });
+}
 function addTrack(upload){
   playlist.load(upload).then(function() {
        //can do stuff with the playlist.
@@ -353,7 +409,7 @@ function save (data){
 
       });
 }
-function deleter (data){
+function refreshSave (data){
 //cara  var name = "crap";//get request for session name
   var updater = data;
   //console.log(data);
