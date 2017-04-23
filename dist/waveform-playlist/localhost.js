@@ -15,7 +15,7 @@ var User = require('./public/js/UserSchema.js')(mongoose);
 var Corpse = require('./public/js/CorpseSchema.js')(mongoose);
 var http = require("http").Server(app);
 var Creds = require('./public/media/json/creds.json');
-var helper = require('sendgrid').mail;
+const nodemailer = require('nodemailer');
 var uristring = process.env.MONGODB_URI ||'mongodb://localhost';
 //var uristring = process.env.MONGODB_URI || Creds.real_URI;
 var PORT = process.env.PORT || 4000;
@@ -82,7 +82,10 @@ app.post('/login', (req, res) => {//login page
 		} else if (user[0].password !== req.body.password) {
 			// res.status(401);
 			res.send({status: 'invalid2', message: 'invalid username/password'});
+
 		} else {//if user is found set session name
+
+            req.session.moniker = user[0].name;
 			req.session.email = user[0].email;
 			res.send({status:"success"});
 		}
@@ -155,17 +158,12 @@ app.post('/newWarp', (req, res) => {//api to register a new user
 app.post('/warpPick', (req, res) => {
 	//console.log(req.body.warpPick);
 	var warpPick = req.body.warpPick;
-
 	Corpse.find({warpName: warpPick}, (err, data) => {
-		//req.session.warpName = data[0].warpName;
+
 
 		req.session.warp = warpPick;
-		req.session.bpm = data.bpm;
-		req.session.trackCount = data.trackCount;
-		req.session.admin = data.admin;
-		res.send({status:"success",data});
-		// session=req.session;
-		// res.send(session.warp);
+        req.session.users = data[0].users;
+		 res.send({status:"success",data});
 	});
 });
 
@@ -260,30 +258,46 @@ app.post('/timeSub', (req, res) => {
 
 
 });
- var SENDGRID_API_KEY = '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';
 
- from_email = new helper.Email("brndnokf@yahoo.com");
- to_email = new helper.Email("etherealveil@gmail.com");
- subject = "Sending with SendGrid is Fun";
- content = new helper.Content("text/plain", "and easy to do anywhere, even with Node.js");
- mail = new helper.Mail(from_email, subject, to_email, content);
+app.post('/sendEmail', (req, res) => {
 
- var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
- var request = sg.emptyRequest({
-   method: 'POST',
-   path: '/v3/mail/send',
-   body: mail.toJSON()
- });
+    // create reusable transporter object using the default SMTP transport
+     let transporter = nodemailer.createTransport({
+         host: 'my.smtp.host',
+         port: 465,
+         secure: true, // use TLS
+         service: 'gmail',
+         auth: {
+             user: 'etherealveil@gmail.com',
+             pass: Creds.gmail_pw
+         }
+     });
 
- sg.API(request, function(error, response) {
-   console.log(response.statusCode);
-   console.log(response.body);
-   console.log(response.headers);
- });
+     // setup email data with unicode symbols
+     let mailOptions = {
+         from: '"Brendan O 💀ExquisiteWarps.net💀" <etherealveil@gmail.com>', // sender address
+         to: req.body.toWhom, // list of receivers
+         subject: req.session.moniker+' sent you a warp to get on called: "'+req.session.warp+'"', // Subject line
+         text: req.session.moniker+' invited you to a project named "'+req.session.warp+'"" on exquisitewarps.net ///Sign in with this email to contribute to it before someone else does.', // plain text body
+         html: '<h3>'+req.session.moniker+' invited you to a project named "'+req.session.warp+'" on exquisitewarps.net</h3> <p>Sign in with this email to contribute to it before someone else does.</p><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><br>'+
+         '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG/1200px-Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG" style="height:200px; padding-right:8px;" align="left"><h3>Wut is all this? </h3>'+
+         '<span>The idea behind this audio game is based on the artists game:<br><a href="https://en.wikipedia.org/wiki/Exquisite_corpse" >Exquisite Corpse.</a><br>Whoever starts the new Warp (admin) sets the amount of people they want to contribute to it and also they put in the first audio/track. Then they cut just a snippet off the end to send to the next user. The next warper will not be able to hear anything before this snippet. That warper should take in thesong snippet or sentence and use it as inspiration to add their bit.<br>And so on...and so on...<br>Until the number of contributers is reached. Then the warp is unlocked. Everyone can play the'+ ' whole creation and download a WAV file of the whole damn thing.<br><br>The idea is for a bunch of people to work on a song or mixtape together without really knowing any part of the bigger picture of the project until it is finished.</span>' // html body
+     };
+     req.session.users.push(req.body.toWhom);
+     var conditions = { warpName: req.session.warp },
+       update = { users: req.session.users};
+     Corpse.update(conditions, update, function (){
+         res.send(update);
+     });
+     ////send mail with defined transport object
+     transporter.sendMail(mailOptions, (error, info) => {
+         if (error) {
+             return console.log(error);
+         }
+         //console.log('Message %s sent: %s', info.messageId, info.response);
+     });
 
-
-
-
+});
 
 ////////
 app.use(express.static('public'));

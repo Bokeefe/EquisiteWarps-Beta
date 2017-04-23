@@ -143,7 +143,6 @@ $.post("/register", { //post to the register api
 }, function(response){
   if(response.status === "success") { //if logged in
     $('#rego').hide();
- // console.log(session.email);
      } else {
         $("#xusername").show();//lol didn't get to test this
      }
@@ -178,8 +177,8 @@ $("#submit3").click(function(e){
         alert("messed up on warpPick");
       }
     });
-    //
-    // if (corpse[0].warp.length >= corpse[0].trackFree){////UNLOCKED
+    
+     if (corpse[0].warp.length >= corpse[0].trackFree){////UNLOCKED
         playlist.load(corpse[0].warp).then(function() {
           //can do stuff with the playlist.
           var tracks = playlist.getInfo();
@@ -193,25 +192,25 @@ $("#submit3").click(function(e){
         isUnlocked =true;
 
         $('#unlockedGroup').show();
-    //
-    // } else {////LOCKED
-    //     var lastTrack = corpse[0].warp;
-    //
-    //         lastTrack = lastTrack[lastTrack.length-1];
-    //
-    //
-    //     playlist.load([lastTrack]).then(function() {
-    //       //can do stuff with the playlist.
-    //
-    //
-    //
-    //       $('#trackCount').html("# Tracks So Far: "+ corpse[0].trackCount);
-    //       //initialize the WAV exporter.
-    //       playlist.initExporter();
-    //     });
-    //     $('#warpLock').html('<i class="fa fa-lock" aria-hidden="true"></i>');
-    //     isUnlocked =false;
-    // }
+
+    } else {////LOCKED
+        var lastTrack = corpse[0].warp;
+
+            lastTrack = lastTrack[lastTrack.length-1];
+
+
+        playlist.load([lastTrack]).then(function() {
+          //can do stuff with the playlist.
+
+
+
+          $('#trackCount').html("# Tracks So Far: "+ corpse[0].trackCount);
+          //initialize the WAV exporter.
+          playlist.initExporter();
+        });
+        $('#warpLock').html('<i class="fa fa-lock" aria-hidden="true"></i>');
+        isUnlocked =false;
+    }
 
        } else {
           $("#xusername").show();//lol didn't get to test this
@@ -246,7 +245,18 @@ $('#chopper').click(function(){
     timeSub(selection);
     $('#chopperDisplay').html(selection);
 });
-$('').css('display','none');
+
+$('#sendEmail').click(function(e){
+    e.preventDefault();
+    var toWhom = $('#toWhom').val();
+
+    $.post("/sendEmail",
+      {toWhom:toWhom},
+      function(data,status){
+        //console.log(status);
+    });
+});
+
 $('#delete').click(function(){
   var updater = [];
   var trackNow = playlist.getInfo();
@@ -410,16 +420,11 @@ function save (data){
       });
 }
 function refreshSave (data){
-//cara  var name = "crap";//get request for session name
   var updater = data;
-  //console.log(data);
       $.post("/update",
         {updater:updater},
         function(data,status){
-
-
-        location.reload();
-
+            location.reload();
       });
 }
 
