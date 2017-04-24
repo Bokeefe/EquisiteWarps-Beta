@@ -64,9 +64,9 @@ app.post('/allwarps',(req,res)=>{
 
 app.get("/userDeets",(req,res)=> {
 	   session=req.session;
-
 		 res.send(session);
 });
+
 
 app.post('/login', (req, res) => {//login page
 	if (!req.body.email || !req.body.password) {//if no name or password provided send error
@@ -78,16 +78,28 @@ app.post('/login', (req, res) => {//login page
 	User.find({email: req.body.email}, (err, user) => {//search for provided email and password in user database
 		if (user.length === 0) {
 			// res.status(401);
-			res.send({status: 'invalid1', message: 'invalid username/passord'});
+			res.send({status: 'invalid1', message: 'not seeing that user in here'});
 		} else if (user[0].password !== req.body.password) {
 			// res.status(401);
-			res.send({status: 'invalid2', message: 'invalid username/password'});
+			res.send({status: 'invalid2', message: 'wrong password'});
 
 		} else {//if user is found set session name
-
             req.session.moniker = user[0].name;
 			req.session.email = user[0].email;
-			res.send({status:"success"});
+			//res.send({status:"success"});
+
+			Corpse.find({
+			    'users': req.body.email
+			}, function(err, docs){
+				var arr = [];
+				for (var i = 0; i <= docs.length-1; i++) {
+					arr.push(docs[i].warpName);
+				}
+			   res.send({status:"success", data: arr});
+			});
+
+
+
 		}
 	});
 });
@@ -96,13 +108,13 @@ app.post('/login', (req, res) => {//login page
 app.post('/register', (req, res) => {//api to register a new user
 	// find this email in the database and see if it already exists
 	User.find({email: req.body.email}, (err, data) => {
-		if (data.length === 0) {      // if the user doesn't exist
+		console.log(data);
+		if(data == false){
 			var newUser = new User({
 				name: req.body.name,
 				email: req.body.email,
 				password: req.body.password
 			});
-
 			newUser.save((err) => { // save the newUser object to the database
 				if (err) {
 					res.status(500);
@@ -116,12 +128,11 @@ app.post('/register', (req, res) => {//api to register a new user
 			console.error(err);
 			res.send({status: 'Error', message: 'server error: ' + err});
 		} else {
+			console.log(data);
 			res.send({status: 'Error', message: 'user already exists'}); // otherwise the user already exists
 		}
 	});
 });
-
-
 
 app.post('/newWarp', (req, res) => {//api to register a new user
 	// find this email in the database and see if it already exists

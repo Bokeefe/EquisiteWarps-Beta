@@ -19,27 +19,10 @@ var playlist = WaveformPlaylist.init({
 
 var isUnlocked;
 
-function allwarps(){
-  $.post( "/allwarps", function( data ) {
-    var options = data;
-    for(var i=0; i< options.length;i++)
-    {
-    //creates option tag
-      jQuery('<option/>', {
-            value: options[i],
-            html: options[i]
-            }).appendTo('#dropdown select'); //appends to select if parent div has id dropdown
-    }
-  });
-}
-allwarps();
-
 
 $.get("/userDeets", function(data, status){
 //
     if (typeof data.email !== "undefined"){
-        //console.log(data.email);
-        //console.log(data);
         $('#page').hide();
         $('#picker').hide();
         $('#main').show();
@@ -52,8 +35,6 @@ $.get("/userDeets", function(data, status){
           //initialize the WAV exporter.
           playlist.initExporter();
         });
-    } else {
-        //you could put an explainer thing here?
     }
 });
 
@@ -113,21 +94,28 @@ $("#submit").click(function(){
     password:password
   }, function(response){
     if(response.status === "success") { //if logged in
-    //window.location = './web-audio-editor.html';//takes you to homepage
     $('#page').hide();
     $('#picker').show();
 
+        var options = response.data;
+    for(var i=0; i< options.length;i++)
+    {
+    //creates option tag
+      jQuery('<option/>', {
+            value: options[i],
+            html: options[i]
+            }).appendTo('#dropdown select'); //appends to select if parent div has id dropdown
+    }
+    //$('#warps').html("Glue");
     $.get("/userDeets", function(data, status){
         if (status === "success"){
-
-        $('#userDisplay').html(data.email);
-      } else {
-        $('#userDisplay').html("this is broken");
-      }
+         $('#userDisplay').html(data.email);
+      } 
     });
     } else {
-        //console.log(response.status);
-        $("#xusername").show();
+        $('#xusername').show();
+        $('#invalidMessage').html(response.message);
+
     }
   });
 });
@@ -142,9 +130,15 @@ $.post("/register", { //post to the register api
     password: password
 }, function(response){
   if(response.status === "success") { //if logged in
+    $('#email').val($('#email2').val());
+    $('#password').val($('#password2').val());
+    console.log("signed them up");
     $('#rego').hide();
+
      } else {
+      console.log(response);
         $("#xusername").show();//lol didn't get to test this
+         $('#invalidMessage').html(response.message);
      }
    });
 });
@@ -154,80 +148,77 @@ $("#submit3").click(function(e){
   var warpName =  $("#warpname").val();
   if(warpName===""){ //go with dropdown selection
     e.preventDefault();
-  var warpPick = $('#warps option:selected').text();
+    var warpPick = $('#warps option:selected').text();
+    $.post( "warpPick", { warpPick: warpPick }, function(response){             
+      if(response.status === "success") { //if logged in
+      var corpse = response.data;
+      $('#picker').hide();
+      $('#main').show();
+      $.get("/userDeets", function(data, status){
+          if (status === "success"){
+          $('#warpDisplay').html(corpse[0].warpName);
+          $('#trackFree').html("Free The warp @ "+corpse[0].trackFree);
+          $('#BPM').html("BPM: "+corpse[0].bpm);
+          $('#timeSub').html("TimeSubtracted: "+corpse[0].timeSub);
+          $('#admin').html("Warp Keeper: "+corpse[0].admin);
+          $('#users').html("Users: "+corpse[0].users);
+          $('#bottomBar').show();
+          console.log(corpse[0]);
+          $('#exitAdmin').html(corpse[0].admin);
+          $('#exitTrackFree').html(corpse[0].trackFree);
+          $('#exitBPM').val(corpse[0].bpm);
+        } else {
+          alert("messed up on warpPick");
+        }
+      });
 
-  $.post( "warpPick", { warpPick: warpPick }, function(response){
+       if (corpse[0].warp.length >= corpse[0].trackFree){////UNLOCKED
+          playlist.load(corpse[0].warp).then(function() {
+            //can do stuff with the playlist.
+            var tracks = playlist.getInfo();
 
-    if(response.status === "success") { //if logged in
-    var corpse = response.data;
-    $('#picker').hide();
-    $('#main').show();
-    $.get("/userDeets", function(data, status){
-        if (status === "success"){
+            $('#trackCount').html("# Tracks So Far: "+ tracks.length);
+            //initialize the WAV exporter.
+            playlist.initExporter();
+          });
+          $('#warpLock').html('<i class="fa fa-unlock" aria-hidden="true"></i>');
+          isUnlocked =true;
 
-        $('#warpDisplay').html(corpse[0].warpName);
-        $('#trackFree').html("Free The warp @ "+corpse[0].trackFree);
-        $('#BPM').html("BPM: "+corpse[0].bpm);
-        $('#timeSub').html("TimeSubtracted: "+corpse[0].timeSub);
-        $('#admin').html("Warp Keeper: "+corpse[0].admin);
-        $('#users').html("Users: "+corpse[0].users);
-        $('#bottomBar').show();
+          $('#unlockedGroup').show();
 
-      } else {
-        alert("messed up on warpPick");
+      } else {////LOCKED
+          var lastTrack = corpse[0].warp;
+
+              lastTrack = lastTrack[lastTrack.length-1];
+
+
+          playlist.load([lastTrack]).then(function() {
+            //can do stuff with the playlist.
+
+            $('#trackCount').html("# Tracks So Far: "+ corpse[0].trackCount);
+            //initialize the WAV exporter.
+            playlist.initExporter();
+          });
+          $('#warpLock').html('<i class="fa fa-lock" aria-hidden="true"></i>');
+          isUnlocked =false;
       }
-    });
-    
-     if (corpse[0].warp.length >= corpse[0].trackFree){////UNLOCKED
-        playlist.load(corpse[0].warp).then(function() {
-          //can do stuff with the playlist.
-          var tracks = playlist.getInfo();
 
+         } else {
+            $("#xusername").show();//lol didn't get to test this
+         }
+       });
+    } else {
+    $.post("/newWarp", { //post to the register api
+        warpName : warpName
+    }, function(response){
+      //console.log(response);
+      if(response.status === "success") { //if logged in
 
-          $('#trackCount').html("# Tracks So Far: "+ tracks.length);
-          //initialize the WAV exporter.
-          playlist.initExporter();
-        });
-        $('#warpLock').html('<i class="fa fa-unlock" aria-hidden="true"></i>');
-        isUnlocked =true;
-
-        $('#unlockedGroup').show();
-
-    } else {////LOCKED
-        var lastTrack = corpse[0].warp;
-
-            lastTrack = lastTrack[lastTrack.length-1];
-
-
-        playlist.load([lastTrack]).then(function() {
-          //can do stuff with the playlist.
-
-
-
-          $('#trackCount').html("# Tracks So Far: "+ corpse[0].trackCount);
-          //initialize the WAV exporter.
-          playlist.initExporter();
-        });
-        $('#warpLock').html('<i class="fa fa-lock" aria-hidden="true"></i>');
-        isUnlocked =false;
-    }
-
-       } else {
-          $("#xusername").show();//lol didn't get to test this
-       }
-     });
-  } else {
-  $.post("/newWarp", { //post to the register api
-      warpName : warpName
-  }, function(response){
-    //console.log(response);
-    if(response.status === "success") { //if logged in
-
-       } else {
-          $("#xusername").show();//lol didn't get to test this
-       }
-     });
-   }
+         } else {
+            $("#xusername").show();//lol didn't get to test this
+         }
+       });
+     }
 });
 /////////////////////////////////////////////////////////////////////
 // $.get("/username", function(data, status){
@@ -246,16 +237,47 @@ $('#chopper').click(function(){
     $('#chopperDisplay').html(selection);
 });
 
-$('#sendEmail').click(function(e){
+$('#next').click(function(e){
     e.preventDefault();
+    $('#main').hide();
+    $('#exitForm').show();
+    $('#toWhom2').val($('#toWhom').val());
+
+    $.get("/userDeets", function(data, status){
+      console.log(data);
+      $('#warpDisplay2').html(data.warp);
+    });
+      $.get("/getSession", function(data, status){
+      console.log(data);
+     
+    });
+
+
+});
+$('#sendEmail').click(function(){
     var toWhom = $('#toWhom').val();
 
     $.post("/sendEmail",
       {toWhom:toWhom},
       function(data,status){
         //console.log(status);
+        alert("Email was send! Cool! You should get an email when the warp is done too!");
     });
 });
+
+$('#wut').click(function(){
+    if ( $('#info').css('display') == 'none'){
+        $('#info').show();
+    } else {
+
+        $('#info').hide();
+    }
+    
+    
+
+});
+
+
 
 $('#delete').click(function(){
   var updater = [];

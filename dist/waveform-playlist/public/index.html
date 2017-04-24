@@ -28,12 +28,20 @@
     </style>
   <body>
 
-<nav class="navbar navbar-inverse" style="width:102%; margin-left:-12px;" >
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Exquisite Warps</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
+
+
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">ExquisiteWarps</a>
+          </div>
+          <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" id="warpDisplay">Track Details
                 <span class="caret"></span></a>
@@ -45,44 +53,38 @@
                     <li><a id="admin">Admin Email</a></li>
                     <li><a id="users">Users</a></li>
                 </ul>
-            <li><a id="warpLock" href="#"></a></li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown">the fuk <i class="fa fa-question-circle-o fa-3" aria-hidden="true"></i>
-                <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a>The idea behind this audio game is <br>
-                       based on the artists's game: <br>
-                       <a href="https://en.wikipedia.org/wiki/Exquisite_corpse" target="_blank" style="font-weight:900; float:right;">Exquisite Corpse</a><br>
-                       Whoever starts the new Warp (admin) <br>
-                      sets the amount of people they want to<br>
-                      contribute to it and also they put in<br>
-                      the first audio/track. Then they cut <br>
-                      just a snippet off the end to send to<br>
-                      the next user. The next warper will not<br>
-                      be able to hear anything before this <br>
-                      snippet. That warper should take in the<br>
-                      song snippet or sentence and use it as <br>
-                      inspiration to add their bit.<br>
-                      And so on...and so on...<br>
-                      Until the number of contributers is <br>
-                      reached. Then the warp is unlocked. <br>
-                      Everyone can play the whole creation<br>
-                      and download a WAV file of the whole<br>
-                      damn thing.</a><iframe  height="315" src="https://www.youtube.com/embed/KDwkkep8ER4" frameborder="0" allowfullscreen></iframe>
-                    </li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a id="logout" class="dropdown-toggle" data-toggle="dropdown">Log Out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
-            </li>
-
-        </ul>
-    </div>
-</nav>
+              <li><a id="warpLock" href="#"></a></li>
+              <li class="dropdown" id="wut">
+                  <a class="dropdown-toggle" data-toggle="dropdown">Wut <i class="fa fa-question-circle-o fa-3" aria-hidden="true"></a></i>
+              </li>
+              <li class="dropdown">
+                  <a id="logout" class="dropdown-toggle" data-toggle="dropdown">Log Out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
 <!-- NAVBAR !-->
+<!-- INFO PAGE -->
+<div class="container" id="info" style="display:none; margin-top: 50px;">
+  <div class="row">
+    <h1>What is this?</h1>
+    <span>
+    <img src="https://1.bp.blogspot.com/-13fyrb-vljg/UI_ROZwViSI/AAAAAAAABQI/4gk5V-xTMJc/s1600/eagleope.jpg" style="height: 300px; padding-right:10px;" align="left"> This website is an attempt at creating an audio version of the artist's game <a href="https://en.wikipedia.org/wiki/Exquisite_corpse" target="_blank"> "Exquisite Corpse" </a>. The idea is for many people to each work semi-blindfolded on a small portion of a song, mixtape or even spoken word story until it reaches a certain number of contributers, then the entire project is unlocked and users can hear the entire 'Warp' that they created together.<br><br>
+    1) The first person that starts the project AKA "admin" gives it a name and sets a number of contributers it will have (up to 10).<br>
+    2) Next, they upload the first piece of audio (either wav or mp3) to the project.<br>
+    3) After that, they use the <span class="btn-select btn btn-default" ><i class="fa fa-italic"></i></span> button to cue the part of the audio they want to send to the next user. Everything to the left of the cue will be hidden and the next user can only sample/hear the audio to the right of the cue. You'd want to pick an outro, a break, or (if it is spoken word) the last sentance of the audio clip for example.<br>
+    4) Then hit the <span class="btn-select btn btn-default" ><i class="fa fa-scissors"></i></span> button to save the place you cued the end snippet.<br>
+    5) Last, punch in the email of the next person you want o invite to contribute. They will only get the snippet sent to them and have the option of downloading the snippet as a wav to sample and loop if they need. That person must pass it on to someone else until the Warp reaches the total contributors, chain letter style.
+  </div>
+  <div class="row">
+<!--     <iframe src="https://www.youtube.com/embed/KDwkkep8ER4" frameborder="0" allowfullscreen style="padding: 50px 0 100px 0; height:500px; margin-left:20%; width:60%;"></iframe> -->
+    
+  </div>
+</div>
 
 <!-- PAGE 2 -->
-<div style="width:auto">
+<div style="width:auto; margin-top:50px">
   <div class="container" id="picker" style="display:none">
     <h3 id="user"></h3>
     <div class="container" >
@@ -139,9 +141,9 @@
   </div>
 
 <!-- PAGE ONE -->
-  <div class="container" id="page">
+  <div class="container" id="page" style="margin-top:50px;">
     <div id="xusername" class="alert alert-danger" style="display:none;">
-      <strong>Hey!</strong> Invalid Username or Password
+      <strong>Hey!</strong> Invalid <span id="invalidMessage"></span>
     </div>
     <h1>Login</h1>
     <div class="row">
@@ -159,9 +161,10 @@
           </form>
         </div>
     </div>
-    <h1>Register</h1>
+
     <div class="row">
       <div class="container" id="rego">
+          <h1>Register</h1>
           <form class="form-horizontal">
               <div class="form-group">
                 <label for="name">Name/CallSign/Band/Group/AKA:</label>
@@ -178,7 +181,7 @@
   </div>
 
 <!-- PAGE THREE AKA PLAYLIST -->
-  <div class="container" id="main" style="display:none; ">
+  <div class="container" id="main" style="display:none; margin-top:65px;">
     <div class="wrapper">
       <article class="post">
         <header class="post-header">
@@ -254,7 +257,7 @@
           <!-- <span title="Log out" class="btn-new-track btn btn-default" id="logout">
             <i class="fa fa-log-out"></i> Logout
           </span> -->
-          <!-- <span title="chopper" class="btn-chopper btn btn-default" id="chopper"><i class="fa fa-bolt" aria-hidden="true"></i> </span> -->
+          <span title="chopper" class="btn-chopper btn btn-default" id="chopper"><i class="fa fa-scissors" aria-hidden="true"></i> </span>
         </div>
         <!--     <div class="btn-group">
 
@@ -320,27 +323,58 @@
     </div>
   </div>
 <!-- END PLAYLIST -->
+<!--  WARP EDIT -->
+<div class="container" id="exitForm" style="display:none; margin-top:75px;">
+  <h1>About to send "<span id="warpDisplay2"></span>"</h1>
+  <div class="row">
+    <div class="form-group">
+      <div class="row">
+        <label>Admin Email:</label>
+        <p id="exitAdmin">Brendan</p>
+        <label>Number of contributors until the Warp is Unlocked:</label>
+        <p id="exitTrackFree">5</p>
 
+
+        <label for="exitBPM">BPM:</label>
+        
+        <input type="text" class="form-control" id="exitBPM" placeholder="Its helpful if you know your BPM to tell the other contributers">
+        <br>
+        <label for="comment">Comment/Notes:</label>
+
+        <textarea class="form-control" rows="5" id="comment" placeholder="Give some general instructions or notes on the goal of the project, the genre, the theme etc...this will be included in the email invitations."></textarea>
+        <label for="toWhom">Next Contributor:</label>
+        <input id="toWhom2" type="text" class="form-control" style="width:225px" placeholder="3) Enter Next Warper's Email"><br>
+        <button id="sendEmail" type="submit" class="btn btn-default">5) Save & Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- BOTTOM NAVBAR -->
-<nav class="navbar navbar-inverse navbar-fixed-bottom" id="bottomBar" style="display:none;">
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Send Warp to next User</a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Send Warp to Next User >>></a>
     </div>
-    <form class="navbar-form navbar-right">
-      <div class="form-group">
-        <input id="toWhom" type="text" class="form-control" style="width:225px" placeholder="2) Enter Next Warper's Email">
-      </div>
-      <button id="sendEmail" type="submit" class="btn btn-default">3) Send</button>
-    </form>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a id="chopper">1) Cut This Warp <i class="fa fa-scissors" aria-hidden="true"></i></a></li>
-      <!-- <li><a href="#">Page 2</a></li>
-      <li><a href="#">Page 3</a></li> -->
-    </ul>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a >1) <span class="btn-select btn btn-default" title="select audio region"><i class="fa fa-italic"></i></span>  Cue the Warp </i></a></li>
+        <li><a i>2) <span class="btn-select btn btn-default"><i class="fa fa-scissors"></i></span> Cut the Warp's snippet</a></li>
+        <li><form class="navbar-form navbar-right">
+          <div class="form-group">
+            <input id="toWhom" type="text" class="form-control" style="width:225px" placeholder="3) Enter Next Warper's Email">
+          </div>
+          <button id="next" type="submit" class="btn btn-default">4) Next</button>
+      </form></li>
+      </ul>
+    </div>
   </div>
 </nav>
-
 
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
