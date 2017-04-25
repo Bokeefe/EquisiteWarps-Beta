@@ -19,7 +19,6 @@ const nodemailer = require('nodemailer');
 var uristring = process.env.MONGODB_URI ||'mongodb://localhost';
 //var uristring = process.env.MONGODB_URI || Creds.real_URI;
 var PORT = process.env.PORT || 4000;
-console.log(Creds.real_URI);
 
 
 mongoose.Promise = global.Promise;
@@ -108,7 +107,6 @@ app.post('/login', (req, res) => {//login page
 app.post('/register', (req, res) => {//api to register a new user
 	// find this email in the database and see if it already exists
 	User.find({email: req.body.email}, (err, data) => {
-		console.log(data);
 		if(data == false){
 			var newUser = new User({
 				name: req.body.name,
@@ -140,21 +138,23 @@ app.post('/newWarp', (req, res) => {//api to register a new user
 		if (data.length === 0) {      // if the warp doesn't exist
 			var newCorpse = new Corpse({
 				warpName: req.body.warpName,
-				trackCount:0,
-				trackFree:0,
+				trackCount:1,
+				trackFree: req.body.trackFree,
 				timeSub:0,
-				bpm:0,
-				admin:session.email,
-				users:[session.email],
+				bpm: req.body.bpm,
+				admin: session.email,
+				users:[ session.email ],
 				warp:[]
 			});
 			newCorpse.save((err) => { // save the newCorpse object to the database
 				if (err) {
 					res.status(500);
 					console.error(err);
-					res.send({status: 'Error', message: 'unable to register user:' + err});
+					res.send({status: 'Error', message: 'unable to create warp:' + err});
 				}
-				res.send({status: 'success', message: 'user added successfully'});
+				req.session.warp = req.body.warpName;
+				req.session.bpm = req.body.bpm;
+				res.send({status: 'success', message: 'warp create successfully'});
 			});
 		} else if (err) { // send back an error if there's a problem
 			res.status(500);
@@ -247,15 +247,20 @@ app.post('/timeSub', (req, res) => {
                         var snippet = JSON.parse(req.body.timeSubNum);
                         var newTimeSub = data[0].timeSub + snippet;
                         var newWarp = data[0].warp;
-
                         for (var i = 0; i < newWarp.length; i++) {
                            newWarp[i].start =newWarp[i].start - snippet;
                            newWarp[i].end =newWarp[i].end - snippet;
                         }
-
+                        var one = JSON.parse(snippet);
+                        var two = JSON.parse(data[0].timeSub);
+                        var bigTime = one+two;
+                        var newTrackCount = data[0].trackCount+1;
+                        console.log(newTrackCount);
+                        console.log(bigTime);
             			var conditions = { warpName: req.session.warp },
-            			  update = { timeSub: newTimeSub,
-                                    warp:newWarp};
+            			  update = { timeSub: bigTime,
+                                    warp:newWarp,
+                                	trackCount: newTrackCount};
             			Corpse.update(conditions, update, function (){////add to timeSub
             				res.send(data);
 
@@ -269,7 +274,27 @@ app.post('/timeSub', (req, res) => {
 
 
 });
+app.post('/addGlobalTime', (req, res) => {
+	Corpse.find({warpName: req.session.warp}, (err, data) => {
+		var add = data[0].timeSub;
+		var arr = data[0].warp;
 
+		for(var i = 0; i <= arr.length-1;i++){
+			console.log(arr[i]);
+			arr[i].start = arr[i].start+add;
+			arr[i].end = arr[i].end+add;
+		}
+
+		var conditions = { warpName: req.session.warp },
+			  update = { warp: arr};
+
+			Corpse.update(conditions, update, function (){
+				res.send(data);
+			});
+
+	});
+
+});
 app.post('/sendEmail', (req, res) => {
 
     // create reusable transporter object using the default SMTP transport
