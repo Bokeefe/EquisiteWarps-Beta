@@ -162,7 +162,7 @@ $("#submit3").click(function(e){
           $('#timeSub').html("TimeSubtracted: "+corpse[0].timeSub);
           $('#admin').html("Warp Keeper: "+corpse[0].admin);
           $('#users').html("Users: "+corpse[0].users);
-          $('#bottomBar').show();
+          $('#bottomNav').show();
           console.log(corpse[0]);
           $('#exitAdmin').html(corpse[0].admin);
           $('#exitTrackFree').html(corpse[0].trackFree);
