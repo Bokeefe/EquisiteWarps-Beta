@@ -175,25 +175,20 @@ $("#submit3").click(function(e){
       console.log(data);
      
     });
+          playlist.load(corpse[0].warp).then(function() {
+            //can do stuff with the playlist.
+            var tracks = playlist.getInfo();
 
-
-
-
-
-          // playlist.load(corpse[0].warp).then(function() {
-          //   //can do stuff with the playlist.
-          //   var tracks = playlist.getInfo();
-
-          //   $('#trackCount').html("# Tracks So Far: "+ tracks.length);
-          //   //initialize the WAV exporter.
-          //   playlist.initExporter();
-          // });
-          // $('#warpLock').html('<i class="fa fa-unlock" aria-hidden="true"></i>');
-          // isUnlocked =true;
-          // $('#unlockedGroup').css("background-color","red");
+            $('#trackCount').html("# Tracks So Far: "+ tracks.length);
+            //initialize the WAV exporter.
+            playlist.initExporter();
+          });
+          $('#warpLock').html('<i class="fa fa-unlock" aria-hidden="true"></i>');
+          isUnlocked =true;
+          $('#unlockedGroup').css("background-color","red");
 
           } else {////LOCKED
-            
+
               var lastTrack = corpse[0].warp;
 
                   lastTrack = lastTrack[lastTrack.length-1];
