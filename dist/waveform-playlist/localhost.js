@@ -240,6 +240,9 @@ app.post('/upload', function(req, res){
 
 app.post('/timeSub', (req, res) => {
 
+            // console.log(req.body.lastTrack);
+            // console.log(req.body.timeSubNum);
+
             	Corpse.find({warpName: req.session.warp}, (err, data) => {
                         var snippet = JSON.parse(req.body.timeSubNum);
                         var newTimeSub = data[0].timeSub + snippet;
@@ -262,7 +265,14 @@ app.post('/timeSub', (req, res) => {
             				res.send(data);
 
             			});
+
+
+
+
+
                 });
+
+
 });
 app.post('/addGlobalTime', (req, res) => {
 	Corpse.find({warpName: req.session.warp}, (err, data) => {
@@ -270,9 +280,11 @@ app.post('/addGlobalTime', (req, res) => {
 		var arr = data[0].warp;
 
 		for(var i = 0; i <= arr.length-1;i++){
+			console.log(arr[i]);
 			arr[i].start = arr[i].start+add;
 			arr[i].end = arr[i].end+add;
 		}
+
 		var conditions = { warpName: req.session.warp },
 			  update = { warp: arr};
 
