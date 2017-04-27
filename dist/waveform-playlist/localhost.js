@@ -61,7 +61,7 @@ app.post('/allwarps',(req,res)=>{
 });
 
 
-app.get("/userDeets",(req,res)=> {
+app.get("/getSession",(req,res)=> {
 	   session=req.session;
 		 res.send(session);
 });
@@ -138,8 +138,8 @@ app.post('/newWarp', (req, res) => {//api to register a new user
 		if (data.length === 0) {      // if the warp doesn't exist
 			var newCorpse = new Corpse({
 				warpName: req.body.warpName,
-				trackCount:1,
-				trackFree: req.body.trackFree,
+				numCont: req.body.numCont,
+				trackFree: false,
 				timeSub:0,
 				bpm: req.body.bpm,
 				admin: session.email,
@@ -152,9 +152,16 @@ app.post('/newWarp', (req, res) => {//api to register a new user
 					console.error(err);
 					res.send({status: 'Error', message: 'unable to create warp:' + err});
 				}
-				req.session.warp = req.body.warpName;
-				req.session.bpm = req.body.bpm;
-				res.send({status: 'success', message: 'warp create successfully'});
+				req.session.warpName=  req.body.warpName;
+				req.session.numCont=  req.body.numCont;
+				req.session.trackFree=  false;
+				req.session.timeSub= 0;
+				req.session.bpm=  req.body.bpm;
+				req.session.admin=  session.email;
+				req.session.users= [ session.email ];
+				req.session.warp= [];
+				
+				res.send({status: 'success', message: 'warp created successfully', data: res.session});
 			});
 		} else if (err) { // send back an error if there's a problem
 			res.status(500);
@@ -170,11 +177,15 @@ app.post('/warpPick', (req, res) => {
 	//console.log(req.body.warpPick);
 	var warpPick = req.body.warpPick;
 	Corpse.find({warpName: warpPick}, (err, data) => {
-
-
-		req.session.warp = warpPick;
-        req.session.users = data[0].users;
-		 res.send({status:"success",data});
+		req.session.warpName = data[0].warpName;
+		req.session.numCont = data[0].numCont;
+		req.session.trackFree = data[0].trackFree;
+		req.session.timeSub = data[0].timeSub;
+		req.session.bpm = data[0].bpm;
+		req.session.admin = data[0].admin;
+		req.session.users = data[0].users;
+		req.session.warp = data[0].warp;
+		res.send({status:"success",data});
 	});
 });
 
@@ -184,21 +195,30 @@ app.post('/logout', (req, res) => {//logout api
 	res.send({status: 'logout', message: 'succesfully logged out'});
 });
 
-app.post('/update', (req, res) => {
-			 var updater = JSON.parse(req.body.updater);
-			req.session.tracks = updater;
-			var conditions = { warpName: req.session.warp },
-			  update = { warp: updater};
+app.post('/update', (req, res) =>	{
+	var updater = JSON.parse(req.body.updater);
+	req.session.warp = updater;
+	Corpse.find({warpName: req.session.warpName}, (err, data) => {
+		var incoming = JSON.parse(req.body.updater);
+		//console.log(incoming[0]);
+		var newTrack = data[0].warp.push(incoming[0]);
+		console.log(data[0].warp);
 
-			Corpse.update(conditions, update, function (){
-				res.send(updater);
-			});
+		var conditions = { warpName: req.session.warpName },
+		
+		update = { warp: data[0].warp};
+		console.log("update");
+		Corpse.update(conditions, update, function (){
+			res.send(updater);
+		});
+	});
 });
 
 app.post('/delete', (req, res) => {
 			var updater = JSON.parse(req.body.updater);
 			var conditions = { warpName: req.body.name },
 			  update = { warp: updater};
+			  console.log("deleted track");
 			Corpse.update(conditions, update, function (){
 				res.send(updater);
 			});
@@ -239,43 +259,54 @@ app.post('/upload', function(req, res){
 });
 
 app.post('/timeSub', (req, res) => {
+	Corpse.find({warpName: req.session.warpName}, (err, data) => {
+		if(data[0].warp.length<data[0].numCont){////warp still needs contributors
 
-            // console.log(req.body.lastTrack);
-            // console.log(req.body.timeSubNum);
+			var snippet = JSON.parse(req.body.timeSubNum);
+			var newTimeSub = data[0].timeSub + snippet;
+			var newWarp = data[0].warp;
+			for (var i = 0; i < newWarp.length; i++) {
+			   newWarp[i].start =newWarp[i].start - snippet;
+			   newWarp[i].end =newWarp[i].end - snippet;
+			}
+			var one = JSON.parse(snippet);
+			var two = JSON.parse(data[0].timeSub);
+			var bigTime = one+two;
 
-            	Corpse.find({warpName: req.session.warp}, (err, data) => {
-                        var snippet = JSON.parse(req.body.timeSubNum);
-                        var newTimeSub = data[0].timeSub + snippet;
-                        var newWarp = data[0].warp;
-                        for (var i = 0; i < newWarp.length; i++) {
-                           newWarp[i].start =newWarp[i].start - snippet;
-                           newWarp[i].end =newWarp[i].end - snippet;
-                        }
-                        var one = JSON.parse(snippet);
-                        var two = JSON.parse(data[0].timeSub);
-                        var bigTime = one+two;
-                        var newTrackCount = data[0].trackCount+1;
-                        console.log(newTrackCount);
-                        console.log(bigTime);
-            			var conditions = { warpName: req.session.warp },
-            			  update = { timeSub: bigTime,
-                                    warp:newWarp,
-                                	trackCount: newTrackCount};
-            			Corpse.update(conditions, update, function (){////add to timeSub
-            				res.send(data);
+			var conditions = { warpName: req.session.warpName },
+			  update = { timeSub: bigTime,
+			                     warp:newWarp,
+			                 	};
+			console.log("time subtraced");
+			Corpse.update(conditions, update, function (){////add to timeSub
+				res.send(data);
+			});
+		} else { ////add global time back to warp
+			console.log("warp finished");
+			var newWarp = data[0].warp;
+			var timeToAdd = data[0].warp[0].start* -1;
+			console.log(timeToAdd);
+			for (var i = 0; i < newWarp.length; i++) {
+				newWarp[i].start = newWarp[i].start +timeToAdd;
+				newWarp[i].end = newWarp[i].end +timeToAdd;
+			}
 
-            			});
-
-
-
-
-
-                });
+			var conditions = { warpName: req.session.warpName },
+			
+			update = { trackFree: "true",
+						warp:newWarp};
+			console.log("warp freed!");
+			Corpse.update(conditions, update, function (){
+				res.send(data);
+			});
 
 
+		}
+	});
 });
+
 app.post('/addGlobalTime', (req, res) => {
-	Corpse.find({warpName: req.session.warp}, (err, data) => {
+	Corpse.find({warpName: req.session.warpName}, (err, data) => {
 		var add = data[0].timeSub;
 		var arr = data[0].warp;
 
@@ -285,9 +316,9 @@ app.post('/addGlobalTime', (req, res) => {
 			arr[i].end = arr[i].end+add;
 		}
 
-		var conditions = { warpName: req.session.warp },
+		var conditions = { warpName: req.session.warpName },
 			  update = { warp: arr};
-
+			  console.log("addGlobalTime");
 			Corpse.update(conditions, update, function (){
 				res.send(data);
 			});
@@ -320,8 +351,9 @@ app.post('/sendEmail', (req, res) => {
          '<span>The idea behind this audio game is based on the artists game:<br><a href="https://en.wikipedia.org/wiki/Exquisite_corpse" >Exquisite Corpse.</a><br>Whoever starts the new Warp (admin) sets the amount of people they want to contribute to it and also they put in the first audio/track. Then they cut just a snippet off the end to send to the next user. The next warper will not be able to hear anything before this snippet. That warper should take in thesong snippet or sentence and use it as inspiration to add their bit.<br>And so on...and so on...<br>Until the number of contributers is reached. Then the warp is unlocked. Everyone can play the'+ ' whole creation and download a WAV file of the whole damn thing.<br><br>The idea is for a bunch of people to work on a song or mixtape together without really knowing any part of the bigger picture of the project until it is finished.</span>' // html body
      };
      req.session.users.push(req.body.toWhom);
-     var conditions = { warpName: req.session.warp },
+     var conditions = { warpName: req.session.warpName },
        update = { users: req.session.users};
+       console.log("users updated");
      Corpse.update(conditions, update, function (){
          res.send(update);
      });

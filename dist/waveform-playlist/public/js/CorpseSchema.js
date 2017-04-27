@@ -3,8 +3,8 @@
 module.exports = (mongoose) => {
    var CorpseSchema = new mongoose.Schema({// creates a new mongoose schema called CorpseSchema
       warpName: String,
-      trackCount:Number,
-      trackFree:Number,
+      numCont:Number,
+      trackFree:Boolean,
       timeSub:Number,
       bpm:Number,
       admin:String,
