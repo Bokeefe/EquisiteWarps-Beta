@@ -234,15 +234,7 @@ $("#submit3").click(function(e){
         });
       }
 });
-/////////////////////////////////////////////////////////////////////
-// $.get("/username", function(data, status){
-//     if (status === "success"){
-//       //console.log(JSON.stringify(data));
-//     $('#user').html(data);
-//   } else {
-//     $('#result').html("this is broken");
-//   }
-// });
+
 //////// EVENT LISTENERS //////////////////////////
 $('#chopper').click(function(){
     var selection = playlist.getTimeSelection();
@@ -329,16 +321,13 @@ $('.upload-btn').on('click', function (){
 $('#upload-input').on('change', function(){
 
   var files = $(this).get(0).files;
-
   if (files.length > 0){
     // create a FormData object which will be sent as the data payload in the
     // AJAX request
     var formData = new FormData();
-
     // loop through all the selected files and add them to the formData object
     for (var i = 0; i < files.length; i++) {
       var file = files[i];
-
       // add the files to formData object for the data payload
       formData.append('uploads[]', file, file.name);
     }
@@ -393,17 +382,13 @@ $('#upload-input').on('change', function(){
             }
           }
         }, false);
-
-
         return xhr;
       }
     });
-
   }
 });
 ///////////// FUNCTIONS TO CALL /////////////////////////
 function timeSub (data){
-
     var trackNow = playlist.getInfo();
     var lastTrack = trackNow[trackNow.length-1];
 
@@ -415,12 +400,36 @@ function timeSub (data){
         timeSubNum:timeSubNum,
         lastTrack:lastTrack},
         function(data,status){
-          console.log(data);
-            // data = data[0].warp;
-            // data = JSON.stringify(data);
-            // save(data);
+          relog();
       });
 }
+
+function relog (){
+location.reload();
+$.get("/getSession", function(data, status){
+      console.log("relog");
+      console.log(data);
+      $('#warpDisplay').html(data.warpName);
+      $('#userDisplay').html(data.moniker);
+      $('#trackFree').html("Unlocked: "+data.trackFree);
+      $('#BPM').html("BPM: "+data.bpm);
+      $('#timeSub').html("TimeSubtracted: "+data.timeSub);
+      $('#admin').html("Warp Keeper: "+data.admin);
+      $('#users').html("Users: "+data.users);
+      $('#bottomNav').show();
+      $('#exitAdmin').html(data.admin);
+      $('#exitTrackFree').html(data.numCont);
+      $('#exitBPM').val(data.bpm);
+
+      playlist.load(data.warp).then(function() {
+        //can do stuff with the playlist.
+
+        //initialize the WAV exporter.
+        playlist.initExporter();
+      });
+    });
+}
+
 function addTrack(upload){
 
   playlist.load(upload).then(function() {

@@ -9,6 +9,7 @@ module.exports = (mongoose) => {
       bpm:Number,
       admin:String,
       users:Array,
+      message:String,
       warp:Array
    });
 

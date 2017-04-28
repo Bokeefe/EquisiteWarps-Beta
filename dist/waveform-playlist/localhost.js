@@ -311,7 +311,6 @@ app.post('/addGlobalTime', (req, res) => {
 		var arr = data[0].warp;
 
 		for(var i = 0; i <= arr.length-1;i++){
-			console.log(arr[i]);
 			arr[i].start = arr[i].start+add;
 			arr[i].end = arr[i].end+add;
 		}
