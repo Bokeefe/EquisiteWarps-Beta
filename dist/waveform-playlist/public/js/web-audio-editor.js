@@ -171,7 +171,7 @@ $("#submit3").click(function(e){
 
                 if (corpse[0].trackFree){////UNLOCKED
                   console.log("unlocked");
-                  console.log(corpse[0].trackFree);
+                 
                   $('#warpLock').html('<i class="fa fa-unlock" aria-hidden="true"></i>');
                   isUnlocked =true;
                   $('#unlockedGroup').css("background-color","red");
@@ -185,7 +185,7 @@ $("#submit3").click(function(e){
 
                   } else {////LOCKED
                     console.log("Locked");
-                    console.log(corpse[0].trackFree);
+                  
                     isUnlocked =false;
                       var lastTrack = corpse[0].warp;
                       lastTrack = lastTrack[lastTrack.length-1];
@@ -283,12 +283,10 @@ $('#delete').click(function(){
   }
     updater = JSON.stringify(updater);
     $.post("/delete",
-      {updater:updater,
-      name:name},
-      function(data,status){
-        //data = playlist.getInfo();
-        data = JSON.stringify(data);
-        refreshSave(data);
+    function(data,status){
+      
+      refreshSave(data);
+
     });
 });
 
@@ -400,35 +398,41 @@ function timeSub (data){
         timeSubNum:timeSubNum,
         lastTrack:lastTrack},
         function(data,status){
+
           relog();
       });
 }
 
 function relog (){
-location.reload();
-$.get("/getSession", function(data, status){
-      console.log("relog");
-      console.log(data);
-      $('#warpDisplay').html(data.warpName);
-      $('#userDisplay').html(data.moniker);
-      $('#trackFree').html("Unlocked: "+data.trackFree);
-      $('#BPM').html("BPM: "+data.bpm);
-      $('#timeSub').html("TimeSubtracted: "+data.timeSub);
-      $('#admin').html("Warp Keeper: "+data.admin);
-      $('#users').html("Users: "+data.users);
-      $('#bottomNav').show();
-      $('#exitAdmin').html(data.admin);
-      $('#exitTrackFree').html(data.numCont);
-      $('#exitBPM').val(data.bpm);
+  playlist.clear();
+setTimeout(function(){loadSession();},000);
+              //loadSession();
+          
 
-      playlist.load(data.warp).then(function() {
-        //can do stuff with the playlist.
-
-        //initialize the WAV exporter.
-        playlist.initExporter();
-      });
-    });
 }
+  function loadSession (){
+      $.get("/getSession", function(data, status){
+          console.log("relog");
+              playlist.load(data.warp).then(function() {
+              //can do stuff with the playlist.
+        
+              //initialize the WAV exporter.
+              playlist.initExporter();
+            });
+          
+          $('#warpDisplay').html(data.warpName);
+          $('#userDisplay').html(data.moniker);
+          $('#trackFree').html("Unlocked: "+data.trackFree);
+          $('#BPM').html("BPM: "+data.bpm);
+          $('#timeSub').html("TimeSubtracted: "+data.timeSub);
+          $('#admin').html("Warp Keeper: "+data.admin);
+          $('#users').html("Users: "+data.users);
+          $('#bottomNav').show();
+          $('#exitAdmin').html(data.admin);
+          $('#exitTrackFree').html(data.numCont);
+          $('#exitBPM').val(data.bpm);
+        });
+    }
 
 function addTrack(upload){
 
@@ -447,6 +451,7 @@ function save (data){
   var updater = [];
   updater.push(data);
   updater = JSON.stringify(updater);
+  
       $.post("/update",
         {updater:updater},
         function(data,status){
@@ -455,11 +460,14 @@ function save (data){
 }
 function refreshSave (data){
   var updater = data;
-      $.post("/update",
-        {updater:updater},
-        function(data,status){
-            location.reload();
-      });
+  playlist.clear();
+playlist.load(data);
+
+  // $.post("/update",
+  //   {updater:updater},
+  //   function(data,status){
+  //       location.reload();
+  // });
 }
 
 

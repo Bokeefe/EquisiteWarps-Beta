@@ -197,12 +197,13 @@ app.post('/logout', (req, res) => {//logout api
 
 app.post('/update', (req, res) =>	{
 	var updater = JSON.parse(req.body.updater);
+	console.log(updater);
 	req.session.warp = updater;
 	Corpse.find({warpName: req.session.warpName}, (err, data) => {
 		var incoming = JSON.parse(req.body.updater);
 		//console.log(incoming[0]);
 		var newTrack = data[0].warp.push(incoming[0]);
-		console.log(data[0].warp);
+		req.session.warp = data[0].warp;
 
 		var conditions = { warpName: req.session.warpName },
 		
@@ -215,13 +216,21 @@ app.post('/update', (req, res) =>	{
 });
 
 app.post('/delete', (req, res) => {
-			var updater = JSON.parse(req.body.updater);
-			var conditions = { warpName: req.body.name },
-			  update = { warp: updater};
-			  console.log("deleted track");
-			Corpse.update(conditions, update, function (){
-				res.send(updater);
-			});
+	Corpse.find({warpName:req.session.warpName},(err,data)=> {
+		
+		data[0].warp.pop();
+		console.log(typeof data[0].warp);
+		updater = data[0].warp;
+		
+		var conditions = { warpName: req.session.warpName },
+		
+		update = { warp: data[0].warp};
+		console.log("update");
+		Corpse.update(conditions, update, function (){
+			res.send(updater);
+		});
+	});
+
 });
 
 
@@ -272,7 +281,7 @@ app.post('/timeSub', (req, res) => {
 			var one = JSON.parse(snippet);
 			var two = JSON.parse(data[0].timeSub);
 			var bigTime = one+two;
-
+			req.session.warp = newWarp;
 			var conditions = { warpName: req.session.warpName },
 			  update = { timeSub: bigTime,
 			                     warp:newWarp,
@@ -290,7 +299,7 @@ app.post('/timeSub', (req, res) => {
 				newWarp[i].start = newWarp[i].start +timeToAdd;
 				newWarp[i].end = newWarp[i].end +timeToAdd;
 			}
-
+			req.session.warp = newWarp;
 			var conditions = { warpName: req.session.warpName },
 			
 			update = { trackFree: "true",
@@ -314,7 +323,7 @@ app.post('/addGlobalTime', (req, res) => {
 			arr[i].start = arr[i].start+add;
 			arr[i].end = arr[i].end+add;
 		}
-
+		req.session.warp = arr;
 		var conditions = { warpName: req.session.warpName },
 			  update = { warp: arr};
 			  console.log("addGlobalTime");
