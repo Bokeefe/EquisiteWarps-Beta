@@ -1,3 +1,4 @@
+/* jshint esversion:6 */
 var playlist = WaveformPlaylist.init({
   samplesPerPixel: 3000,
   waveHeight: 100,
@@ -21,7 +22,7 @@ var isUnlocked;
 
 
 $.get("/getSession", function(data, status){
-
+    console.log(data);
     if (typeof data.email !== "undefined"){
         $('#page').hide();
         $('#picker').hide();
