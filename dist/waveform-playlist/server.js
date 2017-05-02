@@ -1,5 +1,7 @@
 /* jshint esversion:6 */
 require('use-strict');
+"use strict";
+
 var fs = require("fs");
 var path = require('path');
 var formidable = require('formidable');
@@ -103,7 +105,7 @@ app.post('/login', (req, res) => {//login page
 app.post('/register', (req, res) => {//api to register a new user
 	// find this email in the database and see if it already exists
 	User.find({email: req.body.email}, (err, data) => {
-		if(data == false){
+		if(data === false){
 			var newUser = new User({
 				name: req.body.name,
 				email: req.body.email,
@@ -334,7 +336,7 @@ app.post('/saveAndSend', (req, res) => {
 
 	var conditions = { warpName: req.session.warpName },
 
-	update = { 
+	update = {
 				warp:warp};
 	//console.log("warp freed!");
 	//warpFinishEmail(session);
@@ -343,7 +345,7 @@ app.post('/saveAndSend', (req, res) => {
 	});
 	var session = req.session;
 	warpFinishEmail(session);
-	
+
 
 });
 function warpFinishEmail (data){
@@ -354,7 +356,7 @@ function warpFinishEmail (data){
 		for(i in data){
 			tracks.push(data[0].warp[i].src);
 		}
-		
+require('strict-mode')(function () {
 	    let transporter = nodemailer.createTransport({
 	        host: 'my.smtp.host',
 	        port: 465,
@@ -365,7 +367,7 @@ function warpFinishEmail (data){
 	            pass: Creds.gmail_pw
 	        }
 	    });
-	    
+
 	    // setup email data with unicode symbols
 	    let mailOptions = {
 	        from: '"Brendan O 💀ExquisiteWarps.net💀" <etherealveil@gmail.com>', // sender address
@@ -381,6 +383,7 @@ function warpFinishEmail (data){
 	        }
 	        //console.log('Message %s sent: %s', info.messageId, info.response);
 	    });
+    });
 	});
 }
 
@@ -409,8 +412,9 @@ app.post('/sendEmail', (req, res) => {
 	req.session.message = req.body.message;
 	req.session.toWhom = req.body.toWhom;
 	req.session.bpm = req.body.bpm;
-"use strict";
+
     // create reusable transporter object using the default SMTP transport
+    require('strict-mode')(function () {
      let transporter = nodemailer.createTransport({
          host: 'my.smtp.host',
          port: 465,
@@ -449,7 +453,7 @@ app.post('/sendEmail', (req, res) => {
          }
          //console.log('Message %s sent: %s', info.messageId, info.response);
      });
-
+ });
 });
 
 ////////
