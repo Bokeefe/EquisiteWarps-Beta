@@ -1,6 +1,7 @@
+"use strict";
 /* jshint esversion:6 */
 require('use-strict');
-"use strict";
+
 
 var fs = require("fs");
 var path = require('path');

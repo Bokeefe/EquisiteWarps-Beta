@@ -105,7 +105,7 @@ $("#submit3").click(function(e){
     var contPick = $('#sel1').val();
     var newWarp = $("#warpname").val();
     var storeWarp = $('#storedWarps').val();
-   
+
 
   if(newWarp =="" && storeWarp == ""){
     $("#xusername").show();
@@ -176,7 +176,7 @@ $("#submit3").click(function(e){
 
   } else if (newWarp != "") {
     if(contPick!="Number of Contributors:"){
-    
+
             $.post("/newWarp", { //post to the register api
               warpName : $('#warpname').val(),
               numCont: $('#sel1').val(),
@@ -219,7 +219,7 @@ $('#saveAndSend').click(function(){
 var warp = playlist.getInfo();
 warp = JSON.stringify(warp);
 
-    $.post( "saveAndSend", { warp: warp }, function(response){
+    $.post( "/saveAndSend", { warp: warp }, function(response){
       //console.log(response);
       alert("The other users have been emailed");
       setTimeout(function(){logout()},10000);
@@ -274,8 +274,8 @@ $('#sendEmail').click(function(){
         bpm:bpm},
       function(data,status){
         //console.log(status);
-        alert("Email was send! Cool! You should get another email when the is done too!");
-        setTimeout(function(){logout()},10000);
+        alert("Email was sent! Cool! You should get another email when the warp is done too!");
+        setTimeout(function(){logout()},3000);
     });
 });
 
