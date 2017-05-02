@@ -79,6 +79,9 @@
         </div>
       </nav>
 <!-- NAVBAR !-->
+<div id="xusername" class="alert alert-danger" style="display:none; margin-top: 60px;">
+      <strong>Hey!</strong> Invalid <span id="invalidMessage"></span>
+</div>
 
 <!-- INFO PAGE -->
 <div class="container" id="info" style="display:none; margin-top: 50px;">
@@ -93,7 +96,9 @@
     5) Last, punch in the email of the next person you want to invite to contribute. They will only get the snippet sent to them and have the option of downloading the snippet as a wav to sample and loop if they need         <span title="Download the current work as Wav file" class="btn btn-download btn-default">
           <i class="fa fa-download"></i>
         </span>. That person must pass it on to someone else until the Warp reaches the total contributors, chain letter style.<br><hr>
-    If anything doesn't work or you have any idea to improve this hit the <span class="btn-select btn btn-default" ><i class="fa fa-bug"></i></span> button up top. <br>
+    • If you don't have any music stored on your computer use the <span class="btn-select btn btn-default" ><i class="fa fa-youtube"></i></span> button to download mp3s off youtube.<br>
+    • If anything doesn't work or you have any idea to improve this hit the <span class="btn-select btn btn-default" ><i class="fa fa-bug"></i></span> button up top. <br>
+    • The next iteration of this site will be a real-time DAW that multiple people can be on at once, editing like a live GoogleDrive document for bands, groups working together. Stay Tuned.
     Created by Brendan O'Keefe, who happens to be looking for a job. <a href="http://brendan.okeefefam.com" target="_blank">Hire me! <span class="btn-select btn btn-default"><i class="fa fa-file-code-o" aria-hidden="true"></i></span></a> or Beer me <span class="btn-select btn btn-default"><form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" style="display:inline">
                               <input type="hidden" name="cmd" value="_s-xclick">
                               <input type="hidden" name="hosted_button_id" value="Q2AP2QKLPF4HC">
@@ -116,7 +121,7 @@
       <form class="form-horizontal">
             <label class="control-label col-sm-2">Warps you are on:</label>
           <div class="col-sm-offset-2 col-sm-10" id="dropdown">
-            <select id="warps">
+            <select id="storedWarps">
             </select>
           </div>
         </div>
@@ -145,7 +150,7 @@
             </div>
 <br><br>
             <div class="row">
-             <label class="control-label col-sm-2" for="warpname">BPM:</label>
+             <label class="control-label col-sm-2" for="bpmWrite">BPM:</label>
              <div class="col-sm-5">
                <input type="text" class="form-control" id="bpmWrite"  placeholder="BPM (if u kno it)">
              </div>
@@ -167,9 +172,7 @@
 
 <!-- PAGE ONE -->
   <div class="container" id="page" style="margin-top:50px; padding-bottom:75px;">
-    <div id="xusername" class="alert alert-danger" style="display:none;">
-      <strong>Hey!</strong> Invalid <span id="invalidMessage"></span>
-    </div>
+    
     <h1>Login</h1>
     <div class="row">
       <div class="container">
@@ -276,11 +279,19 @@
                     class="btn-trim-audio btn btn-default disabled">Trim</span>
             </div>
             <div class="btn-group">
-          <span title="delete last track" class="btn-delete-track btn btn-default" id="delete">
-            <i class="fa fa-times"></i> Last <i class="fa fa-music" aria-hidden="true"></i>
-          </span>
-          <span title="chopper" class="btn-chopper btn btn-default" id="chopper"><i class="fa fa-scissors" aria-hidden="true"></i> </span>
-        </div>
+              <a href="https://ytmp3.cc/" target="_blank" ><span title="Link to a site that lets you download mp3s off youtube if you need to" class="btn-chopper btn btn-default" ><i class="fa fa-youtube" aria-hidden="true"></i> </span></a>
+            </div>
+            <div class="btn-group">
+               
+              <span title="delete last track" class="btn-delete-track btn btn-default" id="delete">
+                <i class="fa fa-times"></i> Last <i class="fa fa-music" aria-hidden="true"></i>
+                 </span>
+              <span title="Cut the audio snippet for the next user" class="btn-chopper btn btn-default" id="chopper"><i class="fa fa-scissors" aria-hidden="true"></i> </span>
+
+            </div>
+            <!-- <div class="btn-group">
+              <span title="Cut the audio snippet for the next user" class="btn-tester btn btn-default" id="emailTest"><i class="fa fa-bolt" aria-hidden="true"></i> </span>
+            </div> -->
         <!--     <div class="btn-group">
 
         <span title="Prints playlist info to console"
@@ -288,13 +299,13 @@
         <span title="Clear the playlist's tracks" class="btn btn-clear btn-danger">Clear</span>
       </div> -->
       <div class="btn-group" id="unlockedGroup" >
+
         <span title="Download the current work as Wav file" class="btn btn-download btn-default">
           <i class="fa fa-download"></i>
         </span>
       </div>
     </div>
   </div>
-
   <div id="playlist"></div>
   <div class="playlist-bottom-bar">
     <!-- <form class="form-inline">
@@ -383,7 +394,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Send Warp to Next User >>></a>
+      <a class="navbar-brand" href="#" id="playlistMessage1">Send Warp to Next User >>></a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
@@ -395,6 +406,22 @@
           </div>
           <button id="next" type="submit" class="btn btn-default">4) Next</button>
       </form></li>
+      </ul>
+    </div>
+  </div>
+</nav>  
+
+<!-- Final NAVBAR -->
+<nav class="navbar navbar-inverse navbar-fixed-bottom" style="display:none; " id="finalNavbar">
+<!--   <div class="container-fluid">
+      <a class="navbar-brand" href="#">Send Warp to Next User >>></a>
+    </div> -->
+    <div class="collapse navbar-collapse" style="padding-top: 10px;">
+      <ul class="nav navbar-nav ">
+        <li><a href="" id="playlistMessage2"></a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <button id="saveAndSend" type="submit4" class="btn btn-default" style="margin-right: 50px; ">Save & Send</button>
       </ul>
     </div>
   </div>

@@ -10,7 +10,7 @@ const MongoStore = require('connect-mongo')(session);
 var bodyParser = require('body-parser');
 var formidable = require('formidable');
 var app = express();
-var helper = require('sendgrid').mail;
+//var helper = require('sendgrid').mail;
 var User = require('./public/js/UserSchema.js')(mongoose);
 var Corpse = require('./public/js/CorpseSchema.js')(mongoose);
 var http = require("http").Server(app);
@@ -41,9 +41,6 @@ app.use(session({
 }));
 
 app.use(cookieParser(Creds.myCookie));
-
-
-
 
 ////login stuff
 app.get('/', (req, res) => {
@@ -126,7 +123,6 @@ app.post('/register', (req, res) => {//api to register a new user
 			console.error(err);
 			res.send({status: 'Error', message: 'server error: ' + err});
 		} else {
-			console.log(data);
 			res.send({status: 'Error', message: 'user already exists'}); // otherwise the user already exists
 		}
 	});
@@ -138,11 +134,13 @@ app.post('/newWarp', (req, res) => {//api to register a new user
 		if (data.length === 0) {      // if the warp doesn't exist
 			var newCorpse = new Corpse({
 				warpName: req.body.warpName,
+				created:{stamp :new Date().getTime(), read: Date().valueOf()},
 				numCont: req.body.numCont,
 				trackFree: false,
 				timeSub:0,
 				bpm: req.body.bpm,
 				admin: session.email,
+				message:"",
 				users:[ session.email ],
 				warp:[]
 			});
@@ -160,7 +158,7 @@ app.post('/newWarp', (req, res) => {//api to register a new user
 				req.session.admin=  session.email;
 				req.session.users= [ session.email ];
 				req.session.warp= [];
-				
+
 				res.send({status: 'success', message: 'warp created successfully', data: res.session});
 			});
 		} else if (err) { // send back an error if there's a problem
@@ -197,7 +195,6 @@ app.post('/logout', (req, res) => {//logout api
 
 app.post('/update', (req, res) =>	{
 	var updater = JSON.parse(req.body.updater);
-	console.log(updater);
 	req.session.warp = updater;
 	Corpse.find({warpName: req.session.warpName}, (err, data) => {
 		var incoming = JSON.parse(req.body.updater);
@@ -206,9 +203,9 @@ app.post('/update', (req, res) =>	{
 		req.session.warp = data[0].warp;
 
 		var conditions = { warpName: req.session.warpName },
-		
+
 		update = { warp: data[0].warp};
-		console.log("update");
+		//console.log("update");
 		Corpse.update(conditions, update, function (){
 			res.send(updater);
 		});
@@ -217,18 +214,29 @@ app.post('/update', (req, res) =>	{
 
 app.post('/delete', (req, res) => {
 	Corpse.find({warpName:req.session.warpName},(err,data)=> {
-		
+
 		data[0].warp.pop();
-		console.log(typeof data[0].warp);
 		updater = data[0].warp;
-		
-		var conditions = { warpName: req.session.warpName },
-		
-		update = { warp: data[0].warp};
-		console.log("update");
-		Corpse.update(conditions, update, function (){
-			res.send(updater);
-		});
+			if(updater.length===0){
+					//console.log("nothing in the warp")
+				var conditions = { warpName: req.session.warpName },
+
+				update = { warp: []};
+				//console.log("update");
+				Corpse.update(conditions, update, function (){
+					res.send(updater);
+				});
+			}else {
+				//console.log("something in");
+			var conditions = { warpName: req.session.warpName },
+
+			update = { warp: data[0].warp};
+			//console.log("update");
+			Corpse.update(conditions, update, function (){
+				res.send(updater);
+			});
+		}
+
 	});
 
 });
@@ -286,25 +294,29 @@ app.post('/timeSub', (req, res) => {
 			  update = { timeSub: bigTime,
 			                     warp:newWarp,
 			                 	};
-			console.log("time subtraced");
+			//console.log("time subtraced");
 			Corpse.update(conditions, update, function (){////add to timeSub
 				res.send(data);
 			});
 		} else { ////add global time back to warp
-			console.log("warp finished");
+
 			var newWarp = data[0].warp;
 			var timeToAdd = data[0].warp[0].start* -1;
-			console.log(timeToAdd);
 			for (var i = 0; i < newWarp.length; i++) {
 				newWarp[i].start = newWarp[i].start +timeToAdd;
 				newWarp[i].end = newWarp[i].end +timeToAdd;
 			}
 			req.session.warp = newWarp;
+			req.session.trackFree = true;
+
+
 			var conditions = { warpName: req.session.warpName },
-			
-			update = { trackFree: "true",
+
+			update = { trackFree: true,
 						warp:newWarp};
 			console.log("warp freed!");
+			var session = req.session;
+			//warpFinishEmail(session);
 			Corpse.update(conditions, update, function (){
 				res.send(data);
 			});
@@ -313,6 +325,66 @@ app.post('/timeSub', (req, res) => {
 		}
 	});
 });
+
+app.post('/saveAndSend', (req, res) => {
+
+	//console.log(req.body.warp);
+	var warp = JSON.parse(req.body.warp);
+	//console.log(warp);
+	req.session.warp = warp;
+
+	var conditions = { warpName: req.session.warpName },
+
+	update = { 
+				warp:warp};
+	//console.log("warp freed!");
+	//warpFinishEmail(session);
+	Corpse.update(conditions, update, function (){
+		res.send(session);
+	});
+	var session = req.session;
+	warpFinishEmail(session);
+	
+
+});
+function warpFinishEmail (data){
+	//console.log(data);
+	Corpse.find({warpName: session.warpName}, (err, data) => {
+		//console.log(data[0].users)
+		var tracks = [];
+		for(i in data){
+			tracks.push(data[0].warp[i].src);
+		}
+		
+	    let transporter = nodemailer.createTransport({
+	        host: 'my.smtp.host',
+	        port: 465,
+	        secure: true, // use TLS
+	        service: 'gmail',
+	        auth: {
+	            user: 'etherealveil@gmail.com',
+	            pass: Creds.gmail_pw
+	        }
+	    });
+	    
+	    // setup email data with unicode symbols
+	    let mailOptions = {
+	        from: '"Brendan O 💀ExquisiteWarps.net💀" <etherealveil@gmail.com>', // sender address
+	        to: 'etherealveil@gmail.com, '+data[0].users, // list of receivers
+	        subject: session.moniker+' finished a Warp', // Subject line
+	        text: JSON.stringify(session), // plain text body
+	        html: '<h1>'+data[0].warpName+'</h1><p>You can sign in and play/download your collective creation now.</p><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><p>'+data[0].message+'<br><br>'+tracks+'<br><br>'+data[0].users+'</p>' // html body
+	    };
+	    ////send mail with defined transport object
+	    transporter.sendMail(mailOptions, (error, info) => {
+	        if (error) {
+	            return console.log(error);
+	        }
+	        //console.log('Message %s sent: %s', info.messageId, info.response);
+	    });
+	});
+}
+
 
 app.post('/addGlobalTime', (req, res) => {
 	Corpse.find({warpName: req.session.warpName}, (err, data) => {
@@ -326,15 +398,18 @@ app.post('/addGlobalTime', (req, res) => {
 		req.session.warp = arr;
 		var conditions = { warpName: req.session.warpName },
 			  update = { warp: arr};
-			  console.log("addGlobalTime");
+			  //console.log("addGlobalTime");
 			Corpse.update(conditions, update, function (){
 				res.send(data);
 			});
 
 	});
-
 });
+
 app.post('/sendEmail', (req, res) => {
+	req.session.message = req.body.message;
+	req.session.toWhom = req.body.toWhom;
+	req.session.bpm = req.body.bpm;
 
     // create reusable transporter object using the default SMTP transport
      let transporter = nodemailer.createTransport({
@@ -347,21 +422,23 @@ app.post('/sendEmail', (req, res) => {
              pass: Creds.gmail_pw
          }
      });
-
+      //console.log(req.body.toWhom);
      // setup email data with unicode symbols
      let mailOptions = {
          from: '"Brendan O 💀ExquisiteWarps.net💀" <etherealveil@gmail.com>', // sender address
-         to: req.body.toWhom, // list of receivers
-         subject: req.session.moniker+' sent you a warp to get on called: "'+req.session.warp+'"', // Subject line
-         text: req.session.moniker+' invited you to a project named "'+req.session.warp+'"" on exquisitewarps.net ///Sign in with this email to contribute to it before someone else does.', // plain text body
-         html: '<h3>'+req.session.moniker+' invited you to a project named "'+req.session.warp+'" on exquisitewarps.net</h3> <p>Sign in with this email to contribute to it before someone else does.</p><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><br>'+
-         '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG/1200px-Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG" style="height:200px; padding-right:8px;" align="left"><h3>Wut is all this? </h3>'+
+         to: req.session.toWhom, // list of receivers
+         subject: req.session.moniker+' sent you a warp to get on called: "'+req.session.warpName+'"', // Subject line
+         text: req.session.moniker+' invited you to a project named "'+req.session.warpName+'"" on exquisitewarps.net ///Sign in with this email to contribute to it before someone else does.', // plain text body
+         html: '<h3>'+req.session.moniker+' invited you to a project named "'+req.session.warpName+'" on exquisitewarps.net</h3> <p>Sign in with this email to contribute to it before someone else does.</p><b>'+req.session.message+'</b><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><br>'+
+         '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG/1200px-Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG" style="height:200px; padding-right:8px;" align="left"><h3>Wut is all this? </h3><hr>'+
          '<span>The idea behind this audio game is based on the artists game:<br><a href="https://en.wikipedia.org/wiki/Exquisite_corpse" >Exquisite Corpse.</a><br>Whoever starts the new Warp (admin) sets the amount of people they want to contribute to it and also they put in the first audio/track. Then they cut just a snippet off the end to send to the next user. The next warper will not be able to hear anything before this snippet. That warper should take in thesong snippet or sentence and use it as inspiration to add their bit.<br>And so on...and so on...<br>Until the number of contributers is reached. Then the warp is unlocked. Everyone can play the'+ ' whole creation and download a WAV file of the whole damn thing.<br><br>The idea is for a bunch of people to work on a song or mixtape together without really knowing any part of the bigger picture of the project until it is finished.</span>' // html body
      };
      req.session.users.push(req.body.toWhom);
      var conditions = { warpName: req.session.warpName },
-       update = { users: req.session.users};
-       console.log("users updated");
+       update = { 	users: req.session.users,
+       				message:req.session.message,
+       				bpm:req.session.bpm};
+       //console.log("users updated");
      Corpse.update(conditions, update, function (){
          res.send(update);
      });
