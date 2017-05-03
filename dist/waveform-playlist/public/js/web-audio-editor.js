@@ -22,7 +22,7 @@ var isUnlocked;
 
 
 $.get("/getSession", function(data, status){
-    console.log(data);
+    // console.log(data);
     if (typeof data.email !== "undefined"){
         $('#page').hide();
         $('#picker').hide();
@@ -50,7 +50,7 @@ $("#submit").click(function(){
     email:email,
     password:password
   }, function(response){
-    console.log(response);
+    //console.log(response);
     if(response.status === "success") { //if logged in
     $('#page').hide();
     $('#picker').show();
@@ -204,7 +204,7 @@ $("#submit3").click(function(e){
             }
           });
 
-    } else if (contPick="Number of Contributors:") {
+    } else if (contPick = "Number of Contributors:") {
       $("#xusername").show();
       $('#invalidMessage').html("A new Warp you to give it a name and set the number of contributors.");
     }
@@ -219,10 +219,12 @@ $('#saveAndSend').click(function(){
 var warp = playlist.getInfo();
 warp = JSON.stringify(warp);
 
-    $.post( "/saveAndSend", { warp: warp }, function(response){
-      //console.log(response);
-      alert("The other users have been emailed");
-      setTimeout(function(){logout()},10000);
+$.post("/saveAndSend",
+  {warp:warp},
+  function(data){
+      //console.log(data);
+       alert("The other users have been emailed");
+       setTimeout(function(){logout();},3000);
 
       });
 });
@@ -231,7 +233,7 @@ warp = JSON.stringify(warp);
 
 //////// EVENT LISTENERS //////////////////////////
 $('#emailTest').click(function(){
-  $.post("/emailTest");
+  $.post("/sendEmail");
   });
 
 

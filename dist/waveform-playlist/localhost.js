@@ -329,33 +329,35 @@ app.post('/timeSub', (req, res) => {
 
 app.post('/saveAndSend', (req, res) => {
 
-	//console.log(req.body.warp);
+//console.log("save and send");
 	var warp = JSON.parse(req.body.warp);
-	//console.log(warp);
+
+    console.log(req.session.warpName);
+
 	req.session.warp = warp;
 
 	var conditions = { warpName: req.session.warpName },
+	update = {warp:warp};
 
-	update = {
-				warp:warp};
-	//console.log("warp freed!");
-	//warpFinishEmail(session);
 	Corpse.update(conditions, update, function (){
-		res.send(session);
+		res.send(req.session);
 	});
 	var session = req.session;
 	warpFinishEmail(session);
 
 
 });
+
 function warpFinishEmail (data){
 	//console.log(data);
 	Corpse.find({warpName: session.warpName}, (err, data) => {
-		//console.log(data[0].users)
+		// console.log(data);
+        // console.log(data.length);
 		var tracks = [];
-		for(i in data){
+		for(var i = 0; i <= data.length;i++){
 			tracks.push(data[0].warp[i].src);
 		}
+
 
 	    let transporter = nodemailer.createTransport({
 	        host: 'my.smtp.host',
@@ -376,7 +378,7 @@ function warpFinishEmail (data){
 	        text: JSON.stringify(session), // plain text body
 	        html: '<h1>'+data[0].warpName+'</h1><p>You can sign in and play/download your collective creation now.</p><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><p>'+data[0].message+'<br><br>'+tracks+'<br><br>'+data[0].users+'</p>' // html body
 	    };
-	    ////send mail with defined transport object
+	    //send mail with defined transport object
 	    transporter.sendMail(mailOptions, (error, info) => {
 	        if (error) {
 	            return console.log(error);
@@ -408,49 +410,50 @@ app.post('/addGlobalTime', (req, res) => {
 });
 
 app.post('/sendEmail', (req, res) => {
-	req.session.message = req.body.message;
-	req.session.toWhom = req.body.toWhom;
-	req.session.bpm = req.body.bpm;
 
-    // create reusable transporter object using the default SMTP transport
-     let transporter = nodemailer.createTransport({
-         host: 'my.smtp.host',
-         port: 465,
-         secure: true, // use TLS
-         service: 'gmail',
-         auth: {
-             user: 'etherealveil@gmail.com',
-             pass: Creds.gmail_pw
-         }
-     });
-      //console.log(req.body.toWhom);
-     // setup email data with unicode symbols
 
-     let mailOptions = {
-         from: '"Brendan O 💀ExquisiteWarps.net💀" <etherealveil@gmail.com>', // sender address
-         to: req.session.toWhom, // list of receivers
-         subject: req.session.moniker+' sent you a warp to get on called: "'+req.session.warpName+'"', // Subject line
-         text: req.session.moniker+' invited you to a project named "'+req.session.warpName+'"" on exquisitewarps.net ///Sign in with this email to contribute to it before someone else does.', // plain text body
-         html: '<h3>'+req.session.moniker+' invited you to a project named "'+req.session.warpName+'" on exquisitewarps.net</h3> <p>Sign in with this email to contribute to it before someone else does.</p><b>'+req.session.message+'</b><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><br>'+
-         '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG/1200px-Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG" style="height:200px; padding-right:8px;" align="left"><h3>Wut is all this? </h3><hr>'+
-         '<span>The idea behind this audio game is based on the artists game:<br><a href="https://en.wikipedia.org/wiki/Exquisite_corpse" >Exquisite Corpse.</a><br>Whoever starts the new Warp (admin) sets the amount of people they want to contribute to it and also they put in the first audio/track. Then they cut just a snippet off the end to send to the next user. The next warper will not be able to hear anything before this snippet. That warper should take in thesong snippet or sentence and use it as inspiration to add their bit.<br>And so on...and so on...<br>Until the number of contributers is reached. Then the warp is unlocked. Everyone can play the'+ ' whole creation and download a WAV file of the whole damn thing.<br><br>The idea is for a bunch of people to work on a song or mixtape together without really knowing any part of the bigger picture of the project until it is finished.</span>' // html body
-     };
-     req.session.users.push(req.body.toWhom);
-     var conditions = { warpName: req.session.warpName },
-       update = { 	users: req.session.users,
-       				message:req.session.message,
-       				bpm:req.session.bpm};
-       //console.log("users updated");
-     Corpse.update(conditions, update, function (){
-         res.send(update);
-     });
-     ////send mail with defined transport object
-     transporter.sendMail(mailOptions, (error, info) => {
-         if (error) {
-             return console.log(error);
-         }
-         //console.log('Message %s sent: %s', info.messageId, info.response);
-     });
+
+
+
+    // req.session.message = req.body.message;
+	// req.session.toWhom = req.body.toWhom;
+	// req.session.bpm = req.body.bpm;
+    //
+    // // create reusable transporter object using the default SMTP transport
+    //  let transporter = nodemailer.createTransport({
+    //      service: 'gmail',
+    //      auth: {
+    //          user: 'etherealveil@gmail.com',
+    //          pass: Creds.gmail_pw
+    //      }
+    //  });
+    //
+    //
+    //  let mailOptions = {
+    //      from: '"Brendan O 💀ExquisiteWarps.net💀" <etherealveil@gmail.com>', // sender address
+    //      to: req.session.toWhom, // list of receivers
+    //      subject: req.session.moniker+' sent you a warp to get on called: "'+req.session.warpName+'"', // Subject line
+    //      text: req.session.moniker+' invited you to a project named "'+req.session.warpName+'"" on exquisitewarps.net ///Sign in with this email to contribute to it before someone else does.', // plain text body
+    //      html: '<h3>'+req.session.moniker+' invited you to a project named "'+req.session.warpName+'" on exquisitewarps.net</h3> <p>Sign in with this email to contribute to it before someone else does.</p><b>'+req.session.message+'</b><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><br>'+
+    //      '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG/1200px-Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG" style="height:200px; padding-right:8px;" align="left"><h3>Wut is all this? </h3><hr>'+
+    //      '<span>The idea behind this audio game is based on the artists game:<br><a href="https://en.wikipedia.org/wiki/Exquisite_corpse" >Exquisite Corpse.</a><br>Whoever starts the new Warp (admin) sets the amount of people they want to contribute to it and also they put in the first audio/track. Then they cut just a snippet off the end to send to the next user. The next warper will not be able to hear anything before this snippet. That warper should take in thesong snippet or sentence and use it as inspiration to add their bit.<br>And so on...and so on...<br>Until the number of contributers is reached. Then the warp is unlocked. Everyone can play the'+ ' whole creation and download a WAV file of the whole damn thing.<br><br>The idea is for a bunch of people to work on a song or mixtape together without really knowing any part of the bigger picture of the project until it is finished.</span>' // html body
+    //  };
+    //  req.session.users.push(req.body.toWhom);
+    //  var conditions = { warpName: req.session.warpName },
+    //    update = { 	users: req.session.users,
+    //    				message:req.session.message,
+    //    				bpm:req.session.bpm};
+    //    //console.log("users updated");
+    //  Corpse.update(conditions, update, function (){
+    //      res.send(update);
+    //  });
+    //  ////send mail with defined transport object
+    //  transporter.sendMail(mailOptions, (error, info) => {
+    //      if (error) {
+    //          return console.log(error);
+    //      }
+    //      //console.log('Message %s sent: %s', info.messageId, info.response);
+    //  });
 
 });
 
