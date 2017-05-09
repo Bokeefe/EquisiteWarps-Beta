@@ -175,7 +175,7 @@ $("#submit3").click(function(e){
       });
 
   } else if (newWarp != "") {
-    if(contPick!="Number of Contributors:"){
+    if(contPick!="Number of Contributions:"){
 
             $.post("/newWarp", { //post to the register api
               warpName : $('#warpname').val(),
@@ -190,7 +190,7 @@ $("#submit3").click(function(e){
               $('#main').show();
               $('#bottomNav').show();
               $('#warpDisplay').html($('#warpname').val());
-              $('#trackFree').html("Number of contributors: "+$('#sel1').val());
+              $('#trackFree').html("Number of Contributions: "+$('#sel1').val());
               $('#BPM').html("BPM: "+ $('#bpmWrite').val());
               $('#timeSub').html("TimeSubtracted: "+ "0");
               $('#exitTrackFree').html($('#sel1').val());
@@ -204,9 +204,9 @@ $("#submit3").click(function(e){
             }
           });
 
-    } else if (contPick = "Number of Contributors:") {
+    } else if (contPick = "Number of Contributions:") {
       $("#xusername").show();
-      $('#invalidMessage').html("A new Warp you to give it a name and set the number of contributors.");
+      $('#invalidMessage').html("A new Warp you to give it a name and set the number of contributions.");
     }
   }else{
     $("#xusername").show();
@@ -249,8 +249,7 @@ $('#next').click(function(e){
     $('#main').hide();
     $('#exitForm').show();
     $('#toWhom2').val($('#toWhom').val());
-
-
+    $('#bottomNav').hide();
     $.get("/getSession", function(data, status){
 
       $('#warpDisplay2').html(data.warpName);
@@ -269,15 +268,18 @@ $('#sendEmail').click(function(){
     var message= $('#comment').val();
     var bpm = $('#exitBPM').val();
 
-
     $.post("/sendEmail",
       {toWhom:toWhom,
         message:message,
         bpm:bpm},
-      function(data,status){
-        //console.log(status);
+      function(data){
         alert("Email was sent! Cool! You should get another email when the warp is done too!");
-        setTimeout(function(){logout()},3000);
+        //$('#exitForm').hide();
+        setTimeout(function(){logout();},3000);
+
+
+
+
     });
 });
 
@@ -420,7 +422,7 @@ function timeSub (data){
               //console.log("warp was unlocked");
               $('#finalNavbar').show();
               $('#bottomNav').hide();
-              $('#playlistMessage2').html("YISS! you unlocked this warp make and final changes (only to your track) and hit SAVE and everyone else will be emailed.");
+              $('#playlistMessage2').html("YiSS! you unlocked this warp make and final changes (only to your track) and hit SAVE and everyone else will be emailed.");
               $('#bottomNav').hide();
               $('#finalNav').show();
             }
@@ -500,14 +502,14 @@ playlist.load(data);
 
 function logout(){
     $.post("/logout", function (data, status){
-    if(status ==="success"){
-      window.location = "/";
-      $('#main').hide();
-      $('#page').show();
-    } else {
-      reload();
-    }
-  });
+      if(status ==="success"){
+        window.location = "/";
+        $('#main').hide();
+        $('#page').show();
+      } else {
+        reload();
+      }
+    });
 }
 
 //

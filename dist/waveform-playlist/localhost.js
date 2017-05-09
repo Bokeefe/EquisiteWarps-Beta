@@ -105,27 +105,38 @@ app.post('/login', (req, res) => {//login page
 app.post('/register', (req, res) => {//api to register a new user
 	// find this email in the database and see if it already exists
 	User.find({email: req.body.email}, (err, data) => {
-		if(data === false){
-			var newUser = new User({
-				name: req.body.name,
-				email: req.body.email,
-				password: req.body.password
-			});
-			newUser.save((err) => { // save the newUser object to the database
-				if (err) {
-					res.status(500);
-					console.error(err);
-					res.send({status: 'Error', message: 'unable to register user:' + err});
-				}
-				res.send({status: 'success', message: 'user added successfully'});
-			});
-		} else if (err) { // send back an error if there's a problem
-			res.status(500);
-			console.error(err);
-			res.send({status: 'Error', message: 'server error: ' + err});
-		} else {
-			res.send({status: 'Error', message: 'user already exists'}); // otherwise the user already exists
-		}
+        console.log(data);
+        if(data == []){
+            console.log("true");
+            	 	res.send({status: 'Error', message: 'Something not right, either that user is already registered or you didnt fill out all the fields'}); // otherwise the user already exists
+
+        } else {
+            console.log("false ");
+            var newUser = new User({
+                name: req.body.name,
+                email: req.body.email,
+                password: req.body.password
+            });
+            newUser.save((err) => { // save the newUser object to the database
+                if (err) {
+                    res.status(500);
+                    console.error(err);
+                    res.send({status: 'Error', message: 'unable to register user:' + err});
+                }
+                res.send({status: 'success', message: 'user added successfully'});
+            });
+        }
+        //  else if (err) { // send back an error if there's a problem
+        //     res.status(500);
+        //     console.error(err);
+        //     res.send({status: 'Error', message: 'server error: ' + err});
+        // }
+		// if(data === false){
+
+		// }
+        //  else {
+
+		// }
 	});
 });
 
@@ -363,18 +374,18 @@ function warpFinishEmail (data){
 	        host: 'my.smtp.host',
 	        port: 465,
 	        secure: true, // use TLS
-	        service: 'gmail',
+	        service: 'yahoo',
 	        auth: {
-	            user: 'etherealveil@gmail.com',
-	            pass: Creds.gmail_pw
+	            user: 'brndnokf@yahoo.com',
+	            pass: 'zptsnecrfqdclyfu'
 	        }
 	    });
 
 	    // setup email data with unicode symbols
 	    let mailOptions = {
-	        from: '"Brendan O 💀ExquisiteWarps.net💀" <etherealveil@gmail.com>', // sender address
+	        from: 'Brendan O/ExquisiteWarps.net <brndnokf@yahoo.com>', // sender address
 	        to: 'etherealveil@gmail.com, '+data[0].users, // list of receivers
-	        subject: session.moniker+' finished a Warp', // Subject line
+	        subject: '💀'+session.moniker+'💀 finished a Warp', // Subject line
 	        text: JSON.stringify(session), // plain text body
 	        html: '<h1>'+data[0].warpName+'</h1><p>You can sign in and play/download your collective creation now.</p><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><p>'+data[0].message+'<br><br>'+tracks+'<br><br>'+data[0].users+'</p>' // html body
 	    };
@@ -383,8 +394,73 @@ function warpFinishEmail (data){
 	        if (error) {
 	            return console.log(error);
 	        }
-	        //console.log('Message %s sent: %s', info.messageId, info.response);
+	        console.log('Message %s sent: %s', info.messageId, info.response);
 	    });
+
+/////////////////////////////////////////////////
+            //
+            // var helper = require('sendgrid').mail;
+            // var fromEmail = new helper.Email('brndnokf@yahoo.com');
+            // var toEmail = new helper.Email('etherealveil@gmail.com, '+data[0].users);
+            // var subject = '💀 The project "'+session.warpName+'" has been 🔓';
+            // var content = new helper.Content('text/html', '<h1>'+data[0].warpName+'</h1><p>You can sign in and play/download your collective creation now.</p><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><b>Warp Message:</b><p>'+data[0].message+'<br><br>'+tracks+'<br><br>'+data[0].users+'</p>');
+            // var mail = new helper.Mail(fromEmail, subject, toEmail, content);
+            // //var SENDGRID_API_KEY = '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';
+            // var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
+            // console.log(sg);
+            // console.log(SENDGRID_API_KEY);
+            // var request = sg.emptyRequest({
+            //   method: 'POST',
+            //   path: '/v3/mail/send',
+            //   body: mail.toJSON()
+            // });
+            //
+            // sg.API(request, function (error, response) {
+            //   if (error) {
+            //     console.log('Error response received');
+            //   }
+            //   console.log(response.statusCode);
+            // //   console.log(response.body);
+            // //   console.log(response.headers);
+            // });
+            //
+
+
+console.log("WORKING??????");
+
+            //
+            // var sendgrid = require("sendgrid")("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");
+            // var email = new sendgrid.Email();
+            //
+            // email.addTo("brndnokf@yahoo.com");
+            // email.setFrom("etherealveil@gmail.com");
+            // email.setSubject("Sending with SendGrid is Fun");
+            // email.setHtml("and easy to do anywhere, even with Node.js");
+            //
+            // sendgrid.send(email);
+            // console.log(email);
+            // res.sendStatus(200);
+
+            // var api_key = 'key-a57813cf58870640aeac0e3c1c9bd27b';
+            // var domain = 'http://exquisitewarps.net';
+            // var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
+            //
+            // var data = {
+            //   from: 'Excited User <brndnokf@yahoo.com>',
+            //   to: 'etherealveil@gmail.com',
+            //   subject: 'Hello',
+            //   text: 'Testing some Mailgun awesomness!'
+            // };
+            //
+            // mailgun.messages().send(data, function (error, body) {
+            //   console.log(error);
+            // });
+
+
+
+
+
+
 	});
 }
 
@@ -411,49 +487,75 @@ app.post('/addGlobalTime', (req, res) => {
 
 app.post('/sendEmail', (req, res) => {
 
+req.session.users.push(req.body.toWhom);
 
 
 
+    var conditions = { warpName: req.session.warpName },
+          update = { bpm: req.body.bpm,
+              message: req.body.message,
+              users:req.session.users};
 
-    // req.session.message = req.body.message;
-	// req.session.toWhom = req.body.toWhom;
-	// req.session.bpm = req.body.bpm;
-    //
-    // // create reusable transporter object using the default SMTP transport
-    //  let transporter = nodemailer.createTransport({
-    //      service: 'gmail',
-    //      auth: {
-    //          user: 'etherealveil@gmail.com',
-    //          pass: Creds.gmail_pw
-    //      }
-    //  });
-    //
-    //
-    //  let mailOptions = {
-    //      from: '"Brendan O 💀ExquisiteWarps.net💀" <etherealveil@gmail.com>', // sender address
-    //      to: req.session.toWhom, // list of receivers
-    //      subject: req.session.moniker+' sent you a warp to get on called: "'+req.session.warpName+'"', // Subject line
-    //      text: req.session.moniker+' invited you to a project named "'+req.session.warpName+'"" on exquisitewarps.net ///Sign in with this email to contribute to it before someone else does.', // plain text body
-    //      html: '<h3>'+req.session.moniker+' invited you to a project named "'+req.session.warpName+'" on exquisitewarps.net</h3> <p>Sign in with this email to contribute to it before someone else does.</p><b>'+req.session.message+'</b><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><br>'+
-    //      '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG/1200px-Exquisite_corpse_drawing_by_Noah_Ryan_and_Erica_Parrott.JPG" style="height:200px; padding-right:8px;" align="left"><h3>Wut is all this? </h3><hr>'+
-    //      '<span>The idea behind this audio game is based on the artists game:<br><a href="https://en.wikipedia.org/wiki/Exquisite_corpse" >Exquisite Corpse.</a><br>Whoever starts the new Warp (admin) sets the amount of people they want to contribute to it and also they put in the first audio/track. Then they cut just a snippet off the end to send to the next user. The next warper will not be able to hear anything before this snippet. That warper should take in thesong snippet or sentence and use it as inspiration to add their bit.<br>And so on...and so on...<br>Until the number of contributers is reached. Then the warp is unlocked. Everyone can play the'+ ' whole creation and download a WAV file of the whole damn thing.<br><br>The idea is for a bunch of people to work on a song or mixtape together without really knowing any part of the bigger picture of the project until it is finished.</span>' // html body
-    //  };
-    //  req.session.users.push(req.body.toWhom);
-    //  var conditions = { warpName: req.session.warpName },
-    //    update = { 	users: req.session.users,
-    //    				message:req.session.message,
-    //    				bpm:req.session.bpm};
-    //    //console.log("users updated");
-    //  Corpse.update(conditions, update, function (){
-    //      res.send(update);
-    //  });
-    //  ////send mail with defined transport object
-    //  transporter.sendMail(mailOptions, (error, info) => {
-    //      if (error) {
-    //          return console.log(error);
-    //      }
-    //      //console.log('Message %s sent: %s', info.messageId, info.response);
-    //  });
+        Corpse.update(conditions, update, function (){
+            res.send(update);
+        });
+
+
+        	    let transporter = nodemailer.createTransport({
+        	        host: 'my.smtp.host',
+        	        port: 465,
+        	        secure: true, // use TLS
+        	        service: 'yahoo',
+        	        auth: {
+        	            user: 'brndnokf@yahoo.com',
+        	            pass: 'zptsnecrfqdclyfu'
+        	        }
+        	    });
+
+        	    // setup email data with unicode symbols
+        	    let mailOptions = {
+        	        from: 'Brendan O/ExquisiteWarps.net <brndnokf@yahoo.com>', // sender address
+        	        to: req.body.toWhom, // list of receivers
+        	        subject: '💀'+session.moniker+'💀 invited you to "'+req.session.warpName+'"', // Subject line
+        	        text: JSON.stringify(session), // plain text body
+        	        html: req.session.moniker+' invited you to a project named "<b>'+req.session.warpName+'</b>" on <a href="http://exquisitewarps.net">exquisitewarps.net</a> Sign in with this email to contribute to it before someone else does.<br><div style="background-color:rgba(0,0,0,.2)">'+req.body.message+'</div><br><br><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><br>'+
+                               '<h3>Wut is all this? </h3><hr>'+'<iframe width="560" height="315" src="https://www.youtube.com/embed/BGCKou1nBEQ" frameborder="0" allowfullscreen style="padding: 50px 0 100px 0; height:300px; margin-left:20%; width:60%;"></iframe>'+
+                               '<span>The idea behind this audio game is based on the artists game:<b>Exquisite Corpse</b><br><br>Whoever starts the new Warp (admin) sets the amount of people they want to contribute to it and also they put in the first audio/track. Then they cut just a snippet off the end to send to the next user. The next warper will not be able to hear anything before this snippet. That warper should take in thesong snippet or sentence and use it as inspiration to add their bit.<br>And so on...and so on...<br>Until the number of contributers is reached. Then the warp is unlocked. Everyone can play the'+ ' whole creation and download a WAV file of the whole damn thing.<br><br>The idea is for a bunch of people to work on a song or mixtape together without really knowing any part of the bigger picture of the project until it is finished.<br>Created by Brendan OKeefe</span>' // html body
+        	    };
+        	    //send mail with defined transport object
+        	    transporter.sendMail(mailOptions, (error, info) => {
+        	        if (error) {
+        	            return console.log(error);
+        	        }
+        	        console.log('Message %s sent: %s', info.messageId, info.response);
+        	    });
+//
+//     var helper = require('sendgrid').mail;
+//     var fromEmail = new helper.Email('etherealveil@gmail.com');
+//     var toEmail = new helper.Email(req.body.toWhom);
+//     var subject = '💀'+req.session.moniker+'💀 sent you a Warp called: '+req.session.warpName;
+//     var content = new helper.Content('text/html', req.session.moniker+' invited you to a project named "<b>'+req.session.warpName+'</b>" on <a href="http://exquisitewarps.net">exquisitewarps.net</a> Sign in with this email to contribute to it before someone else does.<br><div style="background-color:rgba(0,0,0,.2)">'+req.body.message+'</div><br><br><a href="http://exquisitewarps.net"><button style="width:100%; height:40px; border-radius:25px;">ExquisiteWarps.net</button></a><br><br>'+
+//           '<h3>Wut is all this? </h3><hr>'+
+//           '<span>The idea behind this audio game is based on the artists game:<b>Exquisite Corpse</b><br><br>Whoever starts the new Warp (admin) sets the amount of people they want to contribute to it and also they put in the first audio/track. Then they cut just a snippet off the end to send to the next user. The next warper will not be able to hear anything before this snippet. That warper should take in thesong snippet or sentence and use it as inspiration to add their bit.<br>And so on...and so on...<br>Until the number of contributers is reached. Then the warp is unlocked. Everyone can play the'+ ' whole creation and download a WAV file of the whole damn thing.<br><br>The idea is for a bunch of people to work on a song or mixtape together without really knowing any part of the bigger picture of the project until it is finished.<br>Created by Brendan OKeefe</span>');
+//     var mail = new helper.Mail(fromEmail, subject, toEmail, content);
+//     var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
+//
+//     var request = sg.emptyRequest({
+//       method: 'POST',
+//       path: '/v3/mail/send',
+//       body: mail.toJSON()
+//     });
+// console.log("SG STUFF>>>>"+sg);
+// console.log("WHEREHHERHERH");
+//     sg.API(request, function (error, response) {
+//       if (error) {
+//         console.log('Error response received');
+//       }
+//       console.log(response.statusCode);
+//       console.log(response.body);
+//       console.log(response.headers);
+//
+//     });
 
 });
 
